@@ -1,0 +1,24 @@
+  Container(
+                                    width: width * 0.24,
+                                    child: GetBuilder<AccountViewModel>(
+                                      builder: (controller) =>
+                                          DropdownButtonFormField(
+                                              decoration:
+                                                  InputDecoration.collapsed(
+                                                      hintText: ''),
+                                              icon: Icon(
+                                                Icons.arrow_drop_down,
+                                                color: Colors.amber,
+                                              ),
+                                              onChanged: (_) {},
+                                              hint: Text(
+                                                'الموظف',
+                                                style: TextStyle(
+                                                    color: Colors.amber,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Tajawal'),
+                                              ),
+                                              items:
+                                                  controller.accountsListItems),
+                                    ),
+                                  ),
