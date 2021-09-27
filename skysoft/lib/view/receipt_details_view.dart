@@ -239,8 +239,8 @@ class ReceiptDetailsView extends GetWidget<PreviousReceiptsViewModel> {
                                           ],
                                         )),
                                   ):SizedBox(),
-                                  receiptModel.type=='sales'||controller.returnReceiptFlag?   GetBuilder<PreviousReceiptsViewModel>(
-                                    builder: (controller) => GestureDetector(
+                                    GetBuilder<PreviousReceiptsViewModel>(
+                                    builder: (controller) => controller.returnReceiptFlag?  GestureDetector(
                                       onTap: () {
                                         controller.calculateNetReceipt();
                                       },
@@ -249,13 +249,13 @@ class ReceiptDetailsView extends GetWidget<PreviousReceiptsViewModel> {
                                         child: Icon(
                                           Icons.calculate,
                                           size: 35,
-                                          color: controller.enabled
+                                          color: controller.returnReceiptFlag
                                               ? Colors.orange
                                               : Colors.grey,
                                         ),
                                       ),
-                                    ),
-                                  ):SizedBox(),
+                                    ):SizedBox()
+                                  ),
                                   GetBuilder<PreviousReceiptsViewModel>(
                                     builder: (controller) =>
                                              GestureDetector(

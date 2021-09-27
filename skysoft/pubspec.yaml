@@ -31,6 +31,8 @@ dependencies:
   intl: ^0.17.0
   pdf: ^3.5.0
   path_provider: ^2.0.3
+  device_preview: ^0.7.4
+
   open_file: ^3.2.1
   downloads_path_provider: ^0.1.0
 

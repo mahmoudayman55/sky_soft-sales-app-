@@ -94,6 +94,7 @@ class PreviousReceiptsViewModel extends GetxController {
 
   set setReturnReceiptFlag(bool value) {
     _returnReceiptFlag = value;
+    updateNetReceipt();
   }
 
   get totalDiscount => _totalDiscount;
