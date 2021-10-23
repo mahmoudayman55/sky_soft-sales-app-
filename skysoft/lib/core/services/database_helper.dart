@@ -8,6 +8,7 @@ import 'package:skysoft/models/receipt_item_model.dart';
 import 'package:skysoft/models/receipt_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 
 class DatabaseHelper {
   DatabaseHelper._();
@@ -22,7 +23,7 @@ class DatabaseHelper {
   }
 
   createDatabase() async {
-    String path = join(await getDatabasesPath(), 'skysoft2.db');
+    String path = join(await getDatabasesPath(), 'skysoft6.db');
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int ver) async {
       ///create account table
@@ -42,7 +43,7 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
       try {
         await db.execute('''
   
-  CREATE TABLE $itemTableName($columnItemName TEXT,$columnItemQuantity INTEGER,$columnItemGroup TEXT,
+  CREATE TABLE $itemTableName($columnItemName TEXT,$columnItemQuantity REAL,$columnItemGroup TEXT,
   $columnItemWholesalePrice REAL,$columnItemSellingPrice REAL,$columnItemAvgPurchasePrice REAL,$columnItemLastPurchasePrice REAL,
   $columnItemId INTEGER PRIMARY KEY,$columnItemBarcode INTEGER)
   ''');
@@ -65,8 +66,9 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
 
       try {
         await db.execute(
-            '''CREATE TABLE $receiptItemTableName ($columnReceiptItemId INTEGER PRIMARY KEY, $columnReceiptItemName TEXT,
-  $columnReceiptItemPrice REAL, $columnReceiptItemQuantity INTEGER,
+            '''CREATE TABLE $receiptItemTableName ($columnReceiptItemId INTEGER PRIMARY KEY, $columnReceiptItemName TEXT,$columnReceiptItemReturnableQuantity REAL,
+            $columnReceiptItemFreeReturnableQuantity REAL,
+  $columnReceiptItemPrice REAL, $columnReceiptItemQuantity REAL, $columnReceiptItemFreeQuantity REAL,
   $columnReceiptItemDiscount REAL,$columnReceiptFItemId INTEGER,$columnReceiptItemFReceiptId INTEGER,
   FOREIGN KEY ($columnReceiptItemFReceiptId) REFERENCES $receiptTableName($columnReceiptId) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY ($columnReceiptFItemId) REFERENCES $itemTableName($columnItemId) ON DELETE NO ACTION ON UPDATE NO ACTION)''');
@@ -224,7 +226,6 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
           await dbClient.insert('$itemTableName', element.toJson(),
               conflictAlgorithm: ConflictAlgorithm.replace);
       });
-
     }
   }
 
@@ -238,9 +239,7 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
               conflictAlgorithm: ConflictAlgorithm.replace);
       });
       print("acc ins");
-
     }
-
   }
 
   insertReceiptItem(ReceiptItemModel model) async {
@@ -291,8 +290,8 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
   deleteReceipt(int receiptID) async {
     var dbClient = await _database;
     if (dbClient != null)
-      return await dbClient
-          .delete(receiptTableName, where: '$columnReceiptId=?', whereArgs: [receiptID]);
+      return await dbClient.delete(receiptTableName,
+          where: '$columnReceiptId=?', whereArgs: [receiptID]);
   }
 
   insertAccount(AccountModel account) async {
@@ -309,14 +308,39 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
           'UPDATE $accountTableName SET $columnAccountCurrentBalance = $newBalance WHERE $columnAccountAccId = $id');
   }
 
-  decreaseItemQuantity(int? soldQuantity, int? id) async {
+  decreaseItemQuantity(double? soldQuantity, int? id) async {
     var dbClient = _database;
     if (dbClient != null)
       await dbClient.execute(
           'UPDATE $itemTableName SET $columnItemQuantity = $columnItemQuantity - $soldQuantity WHERE $columnItemId = $id');
   }
 
-  increaseItemQuantity(int? returnedQuantity, int? id) async {
+  decreaseItemReturnableQuantity(double? newReturnAbleQuantity, int? id) async {
+    var dbClient = _database;
+    if (dbClient != null) {
+//       List<Map<String, dynamic>> maps = await dbClient.query(
+//           '''$receiptItemTableName WHERE $columnReceiptItemId==$id''');
+//       ReceiptItemModel receiptItemModel =
+//       maps.map((receipt) => ReceiptItemModel.fromJson(receipt)).toList()[0];
+// print((receiptItemModel.receiptItemId!-1).toString()+'123dsf156sfd1463sgdf43sg15fd34sgf135132gsf32g1fdgfds123gfsd12');
+      await dbClient.execute(
+          'UPDATE $receiptItemTableName SET $columnReceiptItemReturnableQuantity = $newReturnAbleQuantity WHERE $columnReceiptItemId = $id');
+    }
+  }
+  decreaseItemFreeReturnableQuantity(double? newFreeReturnAbleQuantity, int? id) async {
+    var dbClient = _database;
+    if (dbClient != null) {
+//       List<Map<String, dynamic>> maps = await dbClient.query(
+//           '''$receiptItemTableName WHERE $columnReceiptItemId==$id''');
+//       ReceiptItemModel receiptItemModel =
+//       maps.map((receipt) => ReceiptItemModel.fromJson(receipt)).toList()[0];
+// print((receiptItemModel.receiptItemId!-1).toString()+'123dsf156sfd1463sgdf43sg15fd34sgf135132gsf32g1fdgfds123gfsd12');
+      await dbClient.execute(
+          'UPDATE $receiptItemTableName SET $columnReceiptItemFreeReturnableQuantity = $newFreeReturnAbleQuantity WHERE $columnReceiptItemId = $id');
+    }
+  }
+
+  increaseItemQuantity(double? returnedQuantity, int? id) async {
     var dbClient = _database;
     if (dbClient != null)
       await dbClient.execute(
@@ -341,6 +365,8 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
       return [];
   }
 
+
+
   Future<List<ReceiptModel>> getAllReceipts() async {
     var dbClient = await _database;
     if (dbClient != null) {
@@ -352,17 +378,16 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
       return [];
   }
 
-
- Future<List<ReceiptItemModel>> findReceiptItems(int receiptId)async{
-   var dbClient = await _database;
-   if (dbClient != null) {
-     List<Map<String, dynamic>> maps = await dbClient.query('''$receiptItemTableName WHERE $columnReceiptItemFReceiptId==$receiptId''');
-     return maps.isNotEmpty
-         ? maps.map((receipt) => ReceiptItemModel.fromJson(receipt)).toList()
-         : [];
-   } else
-     return [];
-
+  Future<List<ReceiptItemModel>> findReceiptItems(int receiptId) async {
+    var dbClient = await _database;
+    if (dbClient != null) {
+      List<Map<String, dynamic>> maps = await dbClient.query(
+          '''$receiptItemTableName WHERE $columnReceiptItemFReceiptId==$receiptId''');
+      return maps.isNotEmpty
+          ? maps.map((receipt) => ReceiptItemModel.fromJson(receipt)).toList()
+          : [];
+    } else
+      return [];
   }
 
   Future<List<AccountModel>> findAccounts(String searchWord) async {
@@ -378,39 +403,70 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
       return maps.isNotEmpty
           ? maps.map((account) => AccountModel.fromJson(account)).toList()
           : [];
-
     } else
       return [];
   }
 
-
-
-
   Future<List<ReceiptModel>> findReceipt(String searchWord) async {
+    List<ReceiptModel> results = [];
+    List<int?> accountsIDs = [];
+
     //l'%$searchWord%'
-    List<ReceiptModel> allReceipts=await getAllReceipts();
-    List<AccountModel>relatedAccounts=await findAccounts(searchWord);
-    String relatedAccountsIds='';
-    relatedAccounts.forEach((element) {relatedAccountsIds+=element.accId.toString()+',';});
+    List<ReceiptModel> allReceipts = await getAllReceipts();
+    List<AccountModel> relatedAccounts = await findAccounts(searchWord);
+    // String relatedAccountsIds='';
+    relatedAccounts.forEach((element) {
+      accountsIDs.add(element.accId);
+    });
+    print(accountsIDs.toString()+'asdasdasdgfasdgasdgasdgfas');
     var dbClient = await _database;
     if (dbClient != null) {
       List<Map<String, dynamic>> maps =
           await dbClient.query('''$receiptTableName
    WHERE $columnReceiptId LIKE '%$searchWord%'
-   OR $columnReceiptFAccountId IN ${relatedAccountsIds.splitMapJoin(',')}
      ''');
-      List<ReceiptModel>receipts=[];
+      //List<ReceiptModel>receipts=[];
+      results = maps.map((account) => ReceiptModel.fromJson(account)).toList();
+      print(results.length.toString()+' length');
+      allReceipts.forEach((receipt) {
+      for(int i=0;i<accountsIDs.length;i++){
+          if (receipt.fAccountId == accountsIDs[i]) {
+            if(results.contains(receipt)){
+              continue;
+            }
+           else
+           {
+              results.add(receipt);
+              print(receipt.receiptId.toString() +
+                  '   ' +
+                  accountsIDs[i].toString() +
+                  ' ' +
+                  'sadasdasda5454545454545454545454');
+            }
+          }
+        }
+      });
+      print(results.length.toString()+' length');
 
-      receipts= maps.isNotEmpty
-          ? maps.map((account) => ReceiptModel.fromJson(account)).toList()
-          : [];
+      // relatedAccounts.forEach((account) {
+      //   allReceipts.forEach((receipt) {
+      //
+      //     if(receipt.fAccountId==account.accId){
+      //       if(!results.contains(receipt)){
+      //         results.add(receipt);
+      //       }
+      //
+      //     }
+      //   });
+      // });
 
-      return receipts;
-
+      return results;
     } else
       return [];
   }
-  Future<AccountModel> findAccount(int? id) async {
+
+
+  Future<List<AccountModel>> findAccount(int? id) async {
     //l'%$searchWord%'
     var dbClient = await _database;
     if (dbClient != null) {
@@ -418,14 +474,13 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
           await dbClient.query('''$accountTableName
    WHERE $columnAccountAccId == $id
      ''');
-      List<AccountModel> accounts= maps.isNotEmpty
+      List<AccountModel> accounts = maps.isNotEmpty
           ? maps.map((account) => AccountModel.fromJson(account)).toList()
           : [];
-      print(accounts.length.toString()+'*//**/*/*//');
-      return accounts[0];
-
+      print(accounts.length.toString() + '*//**/*/*//');
+      return accounts;
     } else
-      return AccountModel();
+      return [];
   }
 
   Future<List<ItemModel>> findItem(String searchWord) async {
@@ -442,5 +497,18 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
     } else
       return [];
   }
-}
 
+  Future<List<ItemModel>> findItemByBarcode(String searchWord) async {
+    var dbClient = await _database;
+    if (dbClient != null) {
+      List<Map<String, dynamic>> maps =
+          await dbClient.query('''$itemTableName WHERE 
+     $columnItemBarcode = $searchWord
+ ''');
+      return maps.isNotEmpty
+          ? maps.map((item) => ItemModel.fromJson(item)).toList()
+          : [];
+    } else
+      return [];
+  }
+}

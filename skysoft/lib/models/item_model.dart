@@ -2,8 +2,8 @@ import '../constants.dart';
 
 class ItemModel {
   String? itemName, itemGroup;
-  double? wholesalePrice, sellingPrice, avgPurchasePrice, lastPurchasePrice;
-  int? itemId,itemBarcode,itemQuantity=1;
+  double? wholesalePrice, sellingPrice, avgPurchasePrice, lastPurchasePrice,itemQuantity=1;
+  int? itemId,itemBarcode;
   ItemModel(
       {this.itemName,//
       required this.itemQuantity,//
@@ -16,6 +16,7 @@ class ItemModel {
       this.itemBarcode});
 
   toJson() {
+
     return {
       columnItemName: itemName,
       columnItemQuantity: itemQuantity,

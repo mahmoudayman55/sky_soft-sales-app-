@@ -1,18 +1,25 @@
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
+if (localPropertiesFile.exists())
+{
+    localPropertiesFile.withReader('UTF-8')
+    {
+
+        reader ->
         localProperties.load(reader)
     }
+
 }
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
+if (flutterRoot == null)
+{
     throw new FileNotFoundException()("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
+if (flutterVersionCode == null)
+{
     flutterVersionCode = '1'
 }
 
@@ -35,7 +42,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.skysoft"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

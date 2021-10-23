@@ -1,18 +1,18 @@
 import 'package:flutter/cupertino.dart';
 
 class WaitingItemsModel{
-  int? id,quantity;
+  int? id;
   String? name;
-  double? price,discount;
+  double? price,discount,quantity,freeQuantity=0;
   double? value;
-  int? maxReturnQuantity;
+  double? maxReturnQuantity,maxFreeReturnQuantity;
    var quantityTextController=TextEditingController();
+   var freeQuantityTextController=TextEditingController();
    var discountTextController=TextEditingController();
 
 
   setValue(){
     value=price!*quantity!-discount!;
-    maxReturnQuantity=quantity;
   }
 
 
@@ -20,7 +20,10 @@ class WaitingItemsModel{
 
       {required this.id,
         this.maxReturnQuantity,
+        this.maxFreeReturnQuantity,
         required this.quantityTextController,
+        required this.freeQuantityTextController,
+        this.freeQuantity=0,
         required this.discountTextController,
       required this.name,
     required this.quantity,

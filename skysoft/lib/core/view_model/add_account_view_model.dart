@@ -35,8 +35,10 @@ class AccountViewModel extends GetxController {
           )));
       print(account.name.toString());
     });
+    calculateTotalBalance();
     update();
   }
+
 
   // accountsList() {
   //
@@ -54,6 +56,24 @@ class AccountViewModel extends GetxController {
   //   print('doneeeeeeeeeeeeeeeeeeeee**9/*9//*///*/*//**/9*9/');
   //   return accountsListItems;
   // }
+  String _accountSearchQuery='';
+
+  String get accountSearchQuery => _accountSearchQuery;
+
+  set setAccountSearchQuery(String value) {
+    _accountSearchQuery = value;
+  }
+
+  searchForAccount() async {
+    var dbHelper = DatabaseHelper.db;
+    _accountModelList = _accountModelList.isEmpty
+        ? await dbHelper.getAllAccounts()
+        : await dbHelper.findAccounts(_accountSearchQuery);
+    print(_accountModelList);
+    calculateTotalBalance();
+    update();
+    print('items returned successfully');
+  }
 
   addNewAccount(AccountModel account) async {
     var dbHelper = DatabaseHelper.db;
@@ -65,7 +85,19 @@ class AccountViewModel extends GetxController {
   List<AccountModel> _accountModelList = [];
 
   List<AccountModel> get accountModelList => _accountModelList;
+  double _totalBalance=0;
 
+  double get totalBalance => _totalBalance;
+
+  set setTotalBalance(double value) {
+    _totalBalance = value;
+  }
+
+  calculateTotalBalance(){
+  _totalBalance=0;
+  _accountModelList.forEach((element) {_totalBalance+=element.currentBalance!;});
+  update();
+}
   getAllAccounts() async {
     var dbHelper = DatabaseHelper.db;
     _accountModelList = await dbHelper.getAllAccounts();

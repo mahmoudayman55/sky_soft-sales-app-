@@ -5,12 +5,20 @@ import 'package:skysoft/core/%20services/database_helper.dart';
 import 'package:skysoft/models/item_model.dart';
 
 class ItemsViewModel extends GetxController{
-  ItemsViewModel(){
+  // ItemsViewModel(){
+  //
+  // }
+
+
+  @override
+  void onInit() {
     getAllItems();
+   // calculateAllQuantity();
   }
+
   String? itemName, itemGroup;
-  double? wholesalePrice, sellingPrice, avgPurchasePrice, lastPurchasePrice;
-  int?  itemBarcode, itemQuantity;
+  double? wholesalePrice, sellingPrice, avgPurchasePrice, lastPurchasePrice,itemQuantity;
+  int?  itemBarcode ;
 
   List <DropdownMenuItem<ItemModel>>itemListItems=[] ;
 
@@ -24,8 +32,45 @@ class ItemsViewModel extends GetxController{
     });
     update();
   }
+  String _itemSearchQuery='';
 
 
+  String get itemSearchQuery => _itemSearchQuery;
+
+  set setItemSearchQuery(String value) {
+    _itemSearchQuery = value;
+  }
+
+
+  double _allQuantity=0;
+
+
+  double get allQuantity => _allQuantity;
+
+  set setAllQuantity(double value) {
+    _allQuantity = value;
+  }
+
+  calculateAllQuantity(){
+    _allQuantity=0;
+    print(itemModelList.length);
+    itemModelList.forEach((element) {
+      _allQuantity+=element.itemQuantity!;
+      print(allQuantity);
+    });
+    print(allQuantity);
+
+    update();
+  }
+
+  searchForItem() async {
+    var dbHelper = DatabaseHelper.db;
+    _itemModelList = _itemModelList.isEmpty
+        ? await dbHelper.getAllItems()
+        : await dbHelper.findItem(itemSearchQuery);
+    calculateAllQuantity();
+    update();
+  }
 
 
  addNewItem(ItemModel item) async {
@@ -47,6 +92,7 @@ class ItemsViewModel extends GetxController{
 
     var dbHelper=DatabaseHelper.db;
     _itemModelList = await dbHelper.getAllItems();
+    calculateAllQuantity();
     update();
     print('items returned successfully');
   }

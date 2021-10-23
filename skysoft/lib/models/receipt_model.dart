@@ -2,9 +2,6 @@ import '../constants.dart';
 
 class ReceiptModel {
 
-
-
-
   int? receiptId, fAccountId;
   String? date,time,type;
 

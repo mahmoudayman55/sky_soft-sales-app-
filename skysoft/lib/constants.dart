@@ -46,6 +46,8 @@ final String columnItemBarcode = 'item_barcode';
 ///Receipt item model
 //table name
 final String receiptItemTableName='receipt_item';
+final String columnReceiptItemReturnableQuantity='returnable_quantity';
+final String columnReceiptItemFreeReturnableQuantity='free_returnable_quantity';
 final String columnReceiptItemName='receipt_item_name';
 final String columnReceiptItemId='receipt_item_id';
 final String columnReceiptItemQuantity='receipt_item_quantity';
@@ -53,6 +55,7 @@ final String columnReceiptItemPrice='receipt_item_price';
 final String columnReceiptItemDiscount='receipt_item_discount';
 final String columnReceiptItemFReceiptId='receipt_id';
 final String columnReceiptFItemId='item_id';
+final String columnReceiptItemFreeQuantity='free_quantity';
 final String columnReceiptMaxReturnQuantity='returned_quantity';
 
 ///Receipt model
@@ -83,7 +86,12 @@ const Color blue4 = Color.fromARGB(255, 220, 240, 250);
 const Color blue5 = Color.fromARGB(255, 237, 247, 252);
 
 double pdfTableFontSize = 12;
+String getNumber(double input, {int precision = 2}) =>
+    double.parse('$input'.substring(0, '$input'.indexOf('.') + precision + 1)).toString();
 
+Color selectorColor = Colors.lightGreen;
+Color edgesSelectorAColor = Colors.blue;
+Color edgesSelectorBColor = Colors.red;
 
 TextInputDecoration(String label,Icon? PrefixIcon){
 
@@ -117,13 +125,16 @@ BoxDecoration circularBoxDecoration=BoxDecoration(color: Colors.green,borderRadi
 
 
 TextStyle rowItemTextStyle()=>TextStyle(fontSize: ScreenUtil().setSp(30),color: Colors.white,fontWeight: FontWeight.bold,fontFamily: 'Tajawal');
-TextStyle rowItemElementTextStyle()=>TextStyle(fontSize: ScreenUtil().setSp(30),);
+TextStyle rowItemElementTextStyle({Color color=Colors.black87,FontWeight fontWeight=FontWeight.normal})=>TextStyle(fontSize: ScreenUtil().setSp(30),color: color,fontWeight: fontWeight);
 TextStyle rowAccountElementTextStyle()=>TextStyle(fontSize: ScreenUtil().setSp(22),);
 BoxDecoration myBoxDecoration(){
   return  BoxDecoration(
       boxShadow: [BoxShadow(color: Colors.black26,blurRadius: 6,spreadRadius: 1)],
       borderRadius: BorderRadius.circular(20),
       color: Colors.white);
+}
+Widget loadingScreen(){
+  return Center(child: CircularProgressIndicator(color: Colors.lightGreen,),);
 }
 BoxDecoration? boxDecor(double radius) {
   return BoxDecoration(
@@ -139,7 +150,7 @@ BoxDecoration? boxDecor(double radius) {
 }
 
 final ButtonStyle buttonStyle =
-    ElevatedButton.styleFrom(primary: blue2, shape: RoundedRectangleBorder());
+    ElevatedButton.styleFrom(primary: Colors.lightGreen, shape: RoundedRectangleBorder());
 
 Widget defaultButton({
   double width = double.infinity,
@@ -152,17 +163,21 @@ Widget defaultButton({
 })
 
 {
-  return ConstrainedBox(
-    constraints: BoxConstraints(minWidth: width * 0.6, maxWidth: width * 0.6
-    ,minHeight:height*0.08 ),
+  return SizedBox(
+ width: width,
+    height: height,
     child: ElevatedButton(
       onPressed: () {
         function();
       },
-      child: Text(
-        text,
-        style: new TextStyle(
-             fontSize: ScreenUtil().setSp(fontSize)),
+      child: Padding(
+        padding: EdgeInsets.all(5),
+        child: Text(
+
+          text,textAlign: TextAlign.center,
+          style: new TextStyle(fontFamily: 'Tajawal',fontWeight: FontWeight.bold,
+               fontSize: ScreenUtil().setSp(fontSize)),
+        ),
       ),
       style: ElevatedButton.styleFrom(
           primary: background,

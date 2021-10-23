@@ -202,6 +202,7 @@ class SearchAccountView extends GetWidget<ReceiptViewModel> {
 
                                                 await controller.setReceiptNumber();
                                                 controller.setReceiptAccount=controller.accountSearchResultList[index];
+                                               controller.setAccountSearchResultList=await DatabaseHelper.db.getAllAccounts();
                                                 Get.to(ReceiptView());
                                                 Get.put(ReceiptView(),permanent: true);
                                               },

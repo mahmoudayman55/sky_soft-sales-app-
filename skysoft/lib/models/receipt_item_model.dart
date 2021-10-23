@@ -2,28 +2,35 @@ import 'package:skysoft/constants.dart';
 
 class ReceiptItemModel{
   String? rItemName;
-  int? rItemQuantity,fReceiptId,fItemId,maxReturnQuantity;
-  double? rItemPrice;
+  double? rItemQuantity,rItemPrice,returnableQuantity,freeReturnableQuantity,freeQuantity=0;
+  int? fReceiptId,fItemId,receiptItemId;
   double? rItemDiscount=0;
 
   ReceiptItemModel(
       {
       required this.rItemName,
       required this.rItemQuantity,
-      this.maxReturnQuantity,
+      this.returnableQuantity,
+        this.freeReturnableQuantity,
       required this.fItemId,
+        this.freeQuantity=0,
       required this.fReceiptId,
       required this.rItemPrice,
       required this.rItemDiscount,
-      }){this.maxReturnQuantity=this.rItemQuantity;}
+      this.receiptItemId
+      });
   toJson(){
 return{
   columnReceiptItemName:rItemName,
   columnReceiptItemPrice:rItemPrice,
   columnReceiptItemDiscount:rItemDiscount,
   columnReceiptItemQuantity:rItemQuantity,
+  columnReceiptItemFreeQuantity:freeQuantity,
   columnReceiptItemFReceiptId:fReceiptId,
-  columnReceiptFItemId:fItemId
+  columnReceiptFItemId:fItemId,
+  columnReceiptItemReturnableQuantity:returnableQuantity,
+  columnReceiptItemFreeReturnableQuantity:freeReturnableQuantity,
+  columnReceiptItemId:receiptItemId
 };
   }
 
@@ -32,9 +39,14 @@ return{
 
   ReceiptItemModel.fromJson(Map<String,dynamic>map){
     rItemName=map[columnReceiptItemName];
+    returnableQuantity=map[columnReceiptItemReturnableQuantity];
     rItemQuantity=map[columnReceiptItemQuantity];
     rItemDiscount=map[columnReceiptItemDiscount];
     rItemPrice=map[columnReceiptItemPrice];
     fItemId=map[columnReceiptFItemId];
+    fReceiptId=map[columnReceiptItemFReceiptId];
+    receiptItemId=map[columnReceiptItemId];
+    freeQuantity=map[columnReceiptItemFreeQuantity];
+    freeReturnableQuantity=map[columnReceiptItemFreeReturnableQuantity];
   }
 }

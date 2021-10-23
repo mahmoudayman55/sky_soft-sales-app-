@@ -13,6 +13,7 @@ import 'package:skysoft/view/item_view.dart';
 //flutter run --release --no-sound-null-safety
 //flutter run --no-sound-null-safety
 //flutter build apk --no-sound-null-safety
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

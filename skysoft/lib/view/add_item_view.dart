@@ -91,7 +91,7 @@ Widget build(BuildContext context) {
                                               child: TextFormField(
                                                onSaved: (value) {
                                                   controller.itemQuantity =
-                                                      int.parse(value!);
+                                                      double.parse(value!);
                                                 },
                                                 decoration: TextInputDecoration(
                                                   'الكمية',
