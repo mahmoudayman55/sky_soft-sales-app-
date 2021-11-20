@@ -1,6 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_navigation/src/snackbar/snack.dart';
+import 'package:hive/hive.dart';
+import 'package:get/get.dart';
+var constBox= Hive.box(constBoxName);
+
+final String constBoxName = 'account';
+final String startValueName = 'start_value';
 
 ///account table
 final String accountTableName = 'account';
@@ -43,6 +50,11 @@ final String columnItemId = 'item_column_id';
 final String columnItemBarcode = 'item_barcode';
 
 
+final String columnItemNumber = 'item_Number';
+final String columnItemUnitName = 'item_unit_name';
+final String columnItemConversionFactor = 'item_conversion_factor';
+
+
 ///Receipt item model
 //table name
 final String receiptItemTableName='receipt_item';
@@ -58,11 +70,18 @@ final String columnReceiptFItemId='item_id';
 final String columnReceiptItemFreeQuantity='free_quantity';
 final String columnReceiptMaxReturnQuantity='returned_quantity';
 
+final String columnReceiptItemFNumber=           'receipt_item_Number';
+final String columnReceiptItemUnitName=          'receipt_item_unit_name';
+final String columnReceiptItemConversionFactor=  'receipt_item_conversion_factor';
+
+
 ///Receipt model
 final String receiptTableName=           'receipt';
 final String columnReceiptId=            'receipt_id';
-final String columnReceiptDate=      'receipt_date';
-final String columnReceiptTime=      'receipt_time';
+final String columnReceiptStartDate=      'start_date';
+final String columnReceiptSaveDate=      'save_date';
+final String columnReceiptStartTime=      'receipt_Start_time';
+final String columnReceiptSaveTime=      'receipt_Save_time';
 final String columnReceiptTotal=         'total';
 final String columnReceiptDiscount=      'discount';
 final String columnReceiptAddition=      'addition';
@@ -92,6 +111,24 @@ String getNumber(double input, {int precision = 2}) =>
 Color selectorColor = Colors.lightGreen;
 Color edgesSelectorAColor = Colors.blue;
 Color edgesSelectorBColor = Colors.red;
+void snackBar(String title,String message,
+    {Color titleColor=Colors.red, Color messageColor =Colors.black54})=> Get.snackbar('', '',
+    titleText: Directionality(
+      textDirection: TextDirection.rtl,
+      child: Text(title,style: txtStyle(titleColor),),
+    ),
+    messageText: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Text(message,style: txtStyle(messageColor),)),
+    snackPosition: SnackPosition.BOTTOM);
+
+TextStyle txtStyle(Color color,{double fontSize=18}){return
+  TextStyle(
+
+      fontFamily:'Tajawal',
+      color: color,
+      fontSize: ScreenUtil().setSp(fontSize),
+      fontWeight: FontWeight.bold);}
 
 TextInputDecoration(String label,Icon? PrefixIcon){
 
@@ -124,7 +161,7 @@ fontSize: ScreenUtil().setSp(30));
 BoxDecoration circularBoxDecoration=BoxDecoration(color: Colors.green,borderRadius: BorderRadius.circular(50),);
 
 
-TextStyle rowItemTextStyle()=>TextStyle(fontSize: ScreenUtil().setSp(30),color: Colors.white,fontWeight: FontWeight.bold,fontFamily: 'Tajawal');
+TextStyle rowItemTextStyle()=>TextStyle(fontSize: ScreenUtil().setSp(26),color: Colors.white,fontWeight: FontWeight.bold,fontFamily: 'Tajawal');
 TextStyle rowItemElementTextStyle({Color color=Colors.black87,FontWeight fontWeight=FontWeight.normal})=>TextStyle(fontSize: ScreenUtil().setSp(30),color: color,fontWeight: fontWeight);
 TextStyle rowAccountElementTextStyle()=>TextStyle(fontSize: ScreenUtil().setSp(22),);
 BoxDecoration myBoxDecoration(){

@@ -113,6 +113,11 @@ class SearchItemReturnReceiptView extends GetWidget<ReturnReceiptViewModel> {
                                                     'الكمية',
                                                     style: rowItemTextStyle(),
                                                   ),
+                                                ),    DataColumn(
+                                                  label: Text(
+                                                    'الوحدة',
+                                                    style: rowItemTextStyle(),
+                                                  ),
                                                 ),
                                                 DataColumn(
                                                   label: Text(
@@ -184,10 +189,28 @@ class SearchItemReturnReceiptView extends GetWidget<ReturnReceiptViewModel> {
                                                         style:
                                                         rowItemElementTextStyle(),
                                                       )),
-                                                      DataCell(Text(
+                                          DataCell(Text(
+                                          controller
+                                              .itemsSearchResultList[
+                                          index]
+                                              .conversionFactor ==
+                                          1
+                                          ? '${controller.itemsSearchResultList[index].itemQuantity} '
+                                              : '${(controller.itemsSearchResultList[index].itemQuantity! / controller.itemsSearchResultList[index].conversionFactor!.toDouble()).floor()} ' +
+                                          (controller.itemsSearchResultList[index].itemQuantity! %
+                                          controller
+                                              .itemsSearchResultList[index]
+                                              .conversionFactor!
+                                              .toDouble() ==
+                                          0
+                                          ? ''
+                                              : 'و ${controller.itemsSearchResultList[index].itemQuantity! % controller.itemsSearchResultList[index].conversionFactor!.toDouble()}'),
+                                          style:
+                                          rowItemElementTextStyle(),
+                                          )),DataCell(Text(
                                                         controller
                                                             .itemsSearchResultList[index]
-                                                            .itemQuantity
+                                                            .unitName
                                                             .toString(),
                                                         style:
                                                         rowItemElementTextStyle(),

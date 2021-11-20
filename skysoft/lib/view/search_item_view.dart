@@ -25,7 +25,7 @@ class SearchItemView extends GetWidget<ReceiptViewModel> {
         [DeviceOrientation.landscapeRight, DeviceOrientation.landscapeLeft]);
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    TextEditingController searchController=TextEditingController();
+    TextEditingController searchController = TextEditingController();
     return GetBuilder<ReceiptViewModel>(
         builder: (controller) => Container(
             width: screenWidth,
@@ -49,17 +49,19 @@ class SearchItemView extends GetWidget<ReceiptViewModel> {
                             children: [
                               Row(
                                 children: [
-                             Container(
+                                  Container(
                                     alignment: Alignment.center,
                                     width: width * 0.8,
-                                    padding: EdgeInsets.symmetric(horizontal: 10),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.blueGrey.shade400),
                                     child: TextFormField(
                                       textAlign: TextAlign.right,
                                       onChanged: (value) {
-                                        controller.itemSearchQuery = value.toString();
+                                        controller.itemSearchQuery =
+                                            value.toString();
                                         controller.searchForItem();
                                       },
                                       decoration: InputDecoration(
@@ -81,162 +83,179 @@ class SearchItemView extends GetWidget<ReceiptViewModel> {
                                 height: height * 0.03,
                               ),
                               SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: GetBuilder<ReceiptViewModel>(
-                                  builder:(controller){
-                                    controller.searchForItem();
-                                    return DataTable(
-                                      showCheckboxColumn: false,
-                                        dividerThickness: 1,
-                                        dataRowHeight: height * 0.07,
-                                        headingRowHeight: height * 0.07,
-                                        columnSpacing: width * 0.02,
-                                        headingRowColor:
-                                            MaterialStateColor.resolveWith(
-                                                (states) => Colors.lightGreen),
-                                        columns: [
-                                          DataColumn(
-                                            label: Text(
-                                              'الرقم',
-                                              style: rowItemTextStyle(),
+                                  scrollDirection: Axis.horizontal,
+                                  child: GetBuilder<ReceiptViewModel>(
+                                    builder: (controller) {
+                                      controller.searchForItem();
+                                      return DataTable(
+                                          showCheckboxColumn: false,
+                                          dividerThickness: 1,
+                                          dataRowHeight: height * 0.07,
+                                          headingRowHeight: height * 0.07,
+                                          columnSpacing: width * 0.02,
+                                          headingRowColor:
+                                              MaterialStateColor.resolveWith(
+                                                  (states) =>
+                                                      Colors.lightGreen),
+                                          columns: [
+                                            DataColumn(
+                                              label: Text(
+                                                'الرقم',
+                                                style: rowItemTextStyle(),
+                                              ),
                                             ),
-                                          ),
-                                          DataColumn(
-                                            label: Text(
-                                              'الاسم',
-                                              style: rowItemTextStyle(),
+                                            DataColumn(
+                                              label: Text(
+                                                'الاسم',
+                                                style: rowItemTextStyle(),
+                                              ),
                                             ),
-                                          ),
-                                          DataColumn(
-                                            label: Text(
-                                              'الكمية',
-                                              style: rowItemTextStyle(),
+                                            DataColumn(
+                                              label: Text(
+                                                'الكمية',
+                                                style: rowItemTextStyle(),
+                                              ),
                                             ),
-                                          ),
-                                          DataColumn(
-                                            label: Text(
-                                              'سعر البيع بالجملة',
-                                              style: rowItemTextStyle(),
+                                            DataColumn(
+                                              label: Text(
+                                                'الوحدة',
+                                                style: rowItemTextStyle(),
+                                              ),
                                             ),
-                                          ),
-                                          DataColumn(
-                                            label: Text(
-                                              'سعر القطاعي',
-                                              style: rowItemTextStyle(),
+                                            DataColumn(
+                                              label: Text(
+                                                'سعر البيع بالجملة',
+                                                style: rowItemTextStyle(),
+                                              ),
                                             ),
-                                          ),
-                                          DataColumn(
-                                            label: Text(
-                                              ' متوسط سعر الشراء',
-                                              style: rowItemTextStyle(),
+                                            DataColumn(
+                                              label: Text(
+                                                'سعر القطاعي',
+                                                style: rowItemTextStyle(),
+                                              ),
                                             ),
-                                          ),
-                                          DataColumn(
-                                            label: Text(
-                                              'اخر سعر شراء',
-                                              style: rowItemTextStyle(),
+                                            DataColumn(
+                                              label: Text(
+                                                ' متوسط سعر الشراء',
+                                                style: rowItemTextStyle(),
+                                              ),
                                             ),
-                                          ),
-                                          DataColumn(
-                                            label: Text(
-                                              'باركود',
-                                              style: rowItemTextStyle(),
+                                            DataColumn(
+                                              label: Text(
+                                                'اخر سعر شراء',
+                                                style: rowItemTextStyle(),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                        rows:
-                                      List<DataRow>.generate(
-                                  controller.itemsSearchResultList.length,
-                                        (index) => DataRow(
-
-
-                                            onSelectChanged:(_){
-                                      controller.addToWaitingItems(controller.itemsSearchResultList[index]);
-                                      controller.calculateTotal();
-                                      controller.updateNetReceipt();
-                                      Get.back();
-
+                                            DataColumn(
+                                              label: Text(
+                                                'باركود',
+                                                style: rowItemTextStyle(),
+                                              ),
+                                            ),
+                                          ],
+                                          rows: List<DataRow>.generate(
+                                            controller
+                                                .itemsSearchResultList.length,
+                                            (index) => DataRow(
+                                                onSelectChanged: (_) {
+                                                  controller.addToWaitingItems(
+                                                      controller
+                                                              .itemsSearchResultList[
+                                                          index]);
+                                                  controller.calculateTotal();
+                                                  controller.updateNetReceipt();
+                                                  Get.back();
+                                                },
+                                                color: MaterialStateProperty
+                                                    .resolveWith<Color>(
+                                                        (Set<MaterialState>
+                                                            states) {
+                                                  // Even rows will have a grey color.
+                                                  if (index % 2 == 0)
+                                                    return Colors.grey.shade50;
+                                                  return Colors.grey
+                                                      .shade300; // Use default value for other states and odd rows.
+                                                }),
+                                                cells: [
+                                                  DataCell(Text(
+                                                    controller
+                                                        .itemsSearchResultList[
+                                                            index]
+                                                        .itemId
+                                                        .toString(),
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                  DataCell(Text(
+                                                    controller
+                                                        .itemsSearchResultList[
+                                                            index]
+                                                        .itemName
+                                                        .toString(),
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                  DataCell(Text(
+                                                    controller
+                                                                .itemsSearchResultList[
+                                                                    index]
+                                                                .conversionFactor ==
+                                                            1
+                                                        ? '${controller.itemsSearchResultList[index].itemQuantity} '
+                                                        : '${(controller.itemsSearchResultList[index].itemQuantity! / controller.itemsSearchResultList[index].conversionFactor!.toDouble()).floor()} ' +
+                                                            (controller.itemsSearchResultList[index].itemQuantity! %
+                                                                        controller
+                                                                            .itemsSearchResultList[index]
+                                                                            .conversionFactor!
+                                                                            .toDouble() ==
+                                                                    0
+                                                                ? ''
+                                                                : 'و ${controller.itemsSearchResultList[index].itemQuantity! % controller.itemsSearchResultList[index].conversionFactor!.toDouble()}'),
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                  DataCell(Text(
+                                                    controller
+                                                        .itemsSearchResultList[
+                                                            index]
+                                                        .unitName
+                                                        .toString(),
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                  DataCell(Text(
+                                                    '${controller.itemsSearchResultList[index].wholesalePrice!   } ',
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                  DataCell(Text(
+                                                    '${controller.itemsSearchResultList[index].sellingPrice!      } ',
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                  DataCell(Text(
+                                                    '${controller.itemsSearchResultList[index].avgPurchasePrice!  } ',
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                  DataCell(Text(
+                                                    '${controller.itemsSearchResultList[index].lastPurchasePrice! } ',
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                  DataCell(Text(
+                                                    controller
+                                                        .itemsSearchResultList[
+                                                            index]
+                                                        .itemBarcode
+                                                        .toString(),
+                                                    style:
+                                                        rowItemElementTextStyle(),
+                                                  )),
+                                                ]),
+                                          ).toList());
                                     },
-                                        color: MaterialStateProperty
-                                            .resolveWith<Color>(
-                                                (Set<MaterialState>
-                                            states) {
-                                              // Even rows will have a grey color.
-                                              if (index % 2 == 0)
-                                                return Colors.grey.shade50;
-                                              return Colors.grey
-                                                  .shade300; // Use default value for other states and odd rows.
-                                            }),
-                                        cells: [
-                                          DataCell(Text(
-                                            controller
-                                                .itemsSearchResultList[index].itemId
-                                                .toString(),
-                                            style:
-                                            rowItemElementTextStyle(),
-                                          )),
-                                          DataCell(Text(
-                                            controller
-                                                .itemsSearchResultList[index]
-                                                .itemName
-                                                .toString(),
-                                            style:
-                                            rowItemElementTextStyle(),
-                                          )),
-                                          DataCell(Text(
-                                            controller
-                                                .itemsSearchResultList[index]
-                                                .itemQuantity
-                                                .toString(),
-                                            style:
-                                            rowItemElementTextStyle(),
-                                          )),
-                                          DataCell(Text(
-                                            controller
-                                                .itemsSearchResultList[index]
-                                                .wholesalePrice
-                                                .toString(),
-                                            style:
-                                            rowItemElementTextStyle(),
-                                          )),
-                                          DataCell(Text(
-                                            controller
-                                                .itemsSearchResultList[index]
-                                                .sellingPrice
-                                                .toString(),
-                                            style:
-                                            rowItemElementTextStyle(),
-                                          )),
-                                          DataCell(Text(
-                                            controller
-                                                .itemsSearchResultList[index]
-                                                .avgPurchasePrice
-                                                .toString(),
-                                            style:
-                                            rowItemElementTextStyle(),
-                                          )),
-                                          DataCell(Text(
-                                            controller
-                                                .itemsSearchResultList[index]
-                                                .lastPurchasePrice
-                                                .toString(),
-                                            style:
-                                            rowItemElementTextStyle(),
-                                          )),
-                                          DataCell(Text(
-                                            controller
-                                                .itemsSearchResultList[index]
-                                                .itemBarcode
-                                                .toString(),
-                                            style:
-                                            rowItemElementTextStyle(),
-                                          )),
-                                        ]),
-                                  ).toList());
-                                  },
-                                )
-                                ),
-
+                                  )),
                             ],
                           ),
                         ),

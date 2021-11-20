@@ -1,3 +1,8 @@
+import 'dart:math';
+
+
+
+import 'package:hive/hive.dart';
 import 'package:path/path.dart';
 import 'package:skysoft/constants.dart';
 import 'package:skysoft/core/view_model/receipt_view_model.dart';
@@ -23,7 +28,7 @@ class DatabaseHelper {
   }
 
   createDatabase() async {
-    String path = join(await getDatabasesPath(), 'skysoft6.db');
+    String path = join(await getDatabasesPath(), 'skysoftv3.1.db');
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int ver) async {
       ///create account table
@@ -43,7 +48,7 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
       try {
         await db.execute('''
   
-  CREATE TABLE $itemTableName($columnItemName TEXT,$columnItemQuantity REAL,$columnItemGroup TEXT,
+  CREATE TABLE $itemTableName($columnItemName TEXT,$columnItemQuantity REAL,$columnItemGroup TEXT,$columnItemNumber INTEGER,$columnItemUnitName TEXT,$columnItemConversionFactor REAL,
   $columnItemWholesalePrice REAL,$columnItemSellingPrice REAL,$columnItemAvgPurchasePrice REAL,$columnItemLastPurchasePrice REAL,
   $columnItemId INTEGER PRIMARY KEY,$columnItemBarcode INTEGER)
   ''');
@@ -54,149 +59,60 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
 
       try {
         await db.execute(
-            '''CREATE TABLE $receiptTableName($columnReceiptId INTEGER PRIMARY KEY, $columnReceiptDate TEXT,$columnReceiptTime TEXT,
+            '''CREATE TABLE $receiptTableName($columnReceiptId INTEGER PRIMARY KEY AUTOINCREMENT, $columnReceiptStartDate TEXT,$columnReceiptStartTime TEXT,$columnReceiptSaveDate TEXT,$columnReceiptSaveTime TEXT,
           $columnReceiptTotal REAL, $columnReceiptDiscount REAL,$columnReceiptAddition REAL,
            $columnReceiptTax REAL, $columnReceiptCashPayment REAL,
            $columnReceiptBankPayment REAL,$columnReceiptNetReceipt REAL,$columnReceiptType TEXT, $columnReceiptRest REAL,$columnReceiptFAccountId INTEGER,
             FOREIGN KEY ($columnReceiptFAccountId) REFERENCES $accountTableName($columnAccountAccId) ON DELETE NO ACTION ON UPDATE NO ACTION )''');
+
         print('receipt tale created');
+        print('data inserted');
+
+
+
+        // deleteReceipt(999);
+        // print('data deleted');
+
+
+
       } catch (e) {
         print(e);
       }
 
       try {
         await db.execute(
-            '''CREATE TABLE $receiptItemTableName ($columnReceiptItemId INTEGER PRIMARY KEY, $columnReceiptItemName TEXT,$columnReceiptItemReturnableQuantity REAL,
+            '''CREATE TABLE $receiptItemTableName ($columnReceiptItemId INTEGER PRIMARY KEY, $columnReceiptItemName TEXT, $columnReceiptItemReturnableQuantity REAL,$columnReceiptItemFNumber INTEGER,
+            $columnReceiptItemUnitName TEXT, $columnReceiptItemConversionFactor REAL,
             $columnReceiptItemFreeReturnableQuantity REAL,
   $columnReceiptItemPrice REAL, $columnReceiptItemQuantity REAL, $columnReceiptItemFreeQuantity REAL,
   $columnReceiptItemDiscount REAL,$columnReceiptFItemId INTEGER,$columnReceiptItemFReceiptId INTEGER,
   FOREIGN KEY ($columnReceiptItemFReceiptId) REFERENCES $receiptTableName($columnReceiptId) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  FOREIGN KEY ($columnReceiptFItemId) REFERENCES $itemTableName($columnItemId) ON DELETE NO ACTION ON UPDATE NO ACTION)''');
+  FOREIGN KEY ($columnReceiptFItemId) REFERENCES $itemTableName($columnItemId) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY ($columnReceiptItemFNumber) REFERENCES $itemTableName($columnReceiptItemFNumber) ON DELETE NO ACTION ON UPDATE NO ACTION)''');
         print('receipt item tale created');
       } catch (e) {
         Get.snackbar('error', e.toString());
+        print(e);
       }
     });
   }
 
   List<ItemModel> models = [
-    ItemModel(
-        itemQuantity: 24,
-        itemBarcode: 69122,
-        lastPurchasePrice: 99,
-        avgPurchasePrice: 96,
-        sellingPrice: 145,
-        wholesalePrice: 69,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'كيبور'),
-    ItemModel(
-        itemQuantity: 244,
-        itemBarcode: 5212212,
-        lastPurchasePrice: 99,
-        avgPurchasePrice: 965,
-        sellingPrice: 146,
-        wholesalePrice: 63,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'شاشه'),
-    ItemModel(
-        itemQuantity: 45,
-        itemBarcode: 524224,
-        lastPurchasePrice: 45,
-        avgPurchasePrice: 45,
-        sellingPrice: 132,
-        wholesalePrice: 47,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'سماعات'),
-    ItemModel(
-        itemQuantity: 45,
-        itemBarcode: 522121,
-        lastPurchasePrice: 45,
-        avgPurchasePrice: 52,
-        sellingPrice: 123,
-        wholesalePrice: 32,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'لابتوب'),
-    ItemModel(
-        itemQuantity: 455,
-        itemBarcode: 525568,
-        lastPurchasePrice: 43,
-        avgPurchasePrice: 10,
-        sellingPrice: 178,
-        wholesalePrice: 96,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'كابل باور'),
-    ItemModel(
-        itemQuantity: 458,
-        itemBarcode: 5254,
-        lastPurchasePrice: 17,
-        avgPurchasePrice: 12,
-        sellingPrice: 126,
-        wholesalePrice: 47,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'طابعة'),
-    ItemModel(
-        itemQuantity: 1212,
-        itemBarcode: 525451,
-        lastPurchasePrice: 147,
-        avgPurchasePrice: 15,
-        sellingPrice: 127,
-        wholesalePrice: 34,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'طابعة باركود'),
-    ItemModel(
-        itemQuantity: 456,
-        itemBarcode: 525455,
-        lastPurchasePrice: 36,
-        avgPurchasePrice: 14,
-        sellingPrice: 127,
-        wholesalePrice: 14,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'ورق حراري'),
-    ItemModel(
-        itemQuantity: 877,
-        itemBarcode: 521221,
-        lastPurchasePrice: 97,
-        avgPurchasePrice: 18,
-        sellingPrice: 130,
-        wholesalePrice: 120,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'هارد ssd'),
-    ItemModel(
-        itemQuantity: 458,
-        itemBarcode: 521556,
-        lastPurchasePrice: 13,
-        avgPurchasePrice: 19,
-        sellingPrice: 178,
-        wholesalePrice: 178,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'هارد hdd'),
-    ItemModel(
-        itemQuantity: 69,
-        itemBarcode: 52155611,
-        lastPurchasePrice: 13,
-        avgPurchasePrice: 13,
-        sellingPrice: 19,
-        wholesalePrice: 100,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'راوتر'),
-    ItemModel(
-        itemQuantity: 48,
-        itemBarcode: 521556115,
-        lastPurchasePrice: 17,
-        avgPurchasePrice: 14,
-        sellingPrice: 55,
-        wholesalePrice: 47,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'ماوس باد'),
-    ItemModel(
-        itemQuantity: 12,
-        itemBarcode: 5215558,
-        lastPurchasePrice: 56,
-        avgPurchasePrice: 155,
-        sellingPrice: 5578,
-        wholesalePrice: 4712,
-        itemGroup: 'اكسيسوارات',
-        itemName: 'ماوس'),
+    ItemModel(itemQuantity: 24, itemBarcode: 69122, lastPurchasePrice: 99, avgPurchasePrice: 96, sellingPrice: 145, wholesalePrice: 52, itemNumber: 56985,conversionFactor:1 ,  unitName: 'قطعه',  itemGroup: 'اكسيسوارات', itemName: 'كيبورد'),
+    ItemModel(itemQuantity: 24, itemBarcode: 69122, lastPurchasePrice: 99, avgPurchasePrice: 96, sellingPrice: 145, wholesalePrice: 52, itemNumber: 56985,conversionFactor:12 ,       unitName:'علبه' ,   itemGroup: 'اكسيسوارات', itemName: 'كيبورد'),
+    ItemModel(itemQuantity: 24, itemBarcode: 69122, lastPurchasePrice: 99, avgPurchasePrice: 96, sellingPrice: 145, wholesalePrice: 52, itemNumber: 56985,conversionFactor: 48,       unitName:'كرتونة' ,   itemGroup: 'اكسيسوارات', itemName: 'كيبورد'),
+    ItemModel(itemQuantity: 244, itemBarcode: 5212212, lastPurchasePrice: 99, avgPurchasePrice: 965, sellingPrice: 146, wholesalePrice: 63,  itemNumber:5632512144    , itemGroup: 'اكسيسوارات', itemName: 'شاشه'),
+    ItemModel(itemQuantity: 45, itemBarcode: 524224, lastPurchasePrice: 45, avgPurchasePrice: 45, sellingPrice: 132, wholesalePrice: 47,     itemNumber:5632524644    , itemGroup: 'اكسيسوارات', itemName: 'سماعات'),
+    ItemModel(itemQuantity: 45, itemBarcode: 522121, lastPurchasePrice: 45, avgPurchasePrice: 52, sellingPrice: 123, wholesalePrice: 32,     itemNumber:56322354544    , itemGroup: 'اكسيسوارات', itemName: 'لابتوب'),
+    ItemModel(itemQuantity: 455, itemBarcode: 525568, lastPurchasePrice: 43, avgPurchasePrice: 10, sellingPrice: 178, wholesalePrice: 96,    itemNumber:5632315544    , itemGroup: 'اكسيسوارات', itemName: 'كابل باور'),
+    ItemModel(itemQuantity: 458, itemBarcode: 5254, lastPurchasePrice: 17, avgPurchasePrice: 12, sellingPrice: 126, wholesalePrice: 47,      itemNumber:54562632544    , itemGroup: 'اكسيسوارات', itemName: 'طابعة'),
+    ItemModel(itemQuantity: 1212, itemBarcode: 525451, lastPurchasePrice: 147, avgPurchasePrice: 15, sellingPrice: 127, wholesalePrice: 34,  itemNumber:563432544234    , itemGroup: 'اكسيسوارات', itemName: 'طابعة باركود'),
+    ItemModel(itemQuantity: 456, itemBarcode: 525455, lastPurchasePrice: 36, avgPurchasePrice: 14, sellingPrice: 127, wholesalePrice: 14,    itemNumber:5633456734562544    , itemGroup: 'اكسيسوارات', itemName: 'ورق حراري'),
+    ItemModel(itemQuantity: 877, itemBarcode: 521221, lastPurchasePrice: 97, avgPurchasePrice: 18, sellingPrice: 130, wholesalePrice: 120,   itemNumber:563456346372544    , itemGroup: 'اكسيسوارات', itemName: 'هارد ssd'),
+    ItemModel(itemQuantity: 458, itemBarcode: 521556, lastPurchasePrice: 13, avgPurchasePrice: 19, sellingPrice: 178, wholesalePrice: 178,   itemNumber:5632525442344    , itemGroup: 'اكسيسوارات', itemName: 'هارد hdd'),
+    ItemModel(itemQuantity: 69, itemBarcode: 52155611, lastPurchasePrice: 13, avgPurchasePrice: 13, sellingPrice: 19, wholesalePrice: 100,   itemNumber:56322354236544    , itemGroup: 'اكسيسوارات', itemName: 'راوتر'),
+    ItemModel(itemQuantity: 48, itemBarcode: 521556115, lastPurchasePrice: 17, avgPurchasePrice: 14, sellingPrice: 55, wholesalePrice: 47,   itemNumber:5632235345544    , itemGroup: 'اكسيسوارات', itemName: 'ماوس باد'),
+    ItemModel(itemQuantity: 12, itemBarcode: 5215558, lastPurchasePrice: 56, avgPurchasePrice: 155, sellingPrice: 5578, wholesalePrice: 4712,itemNumber:5632523423444    , itemGroup: 'اكسيسوارات', itemName: 'ماوس'),
   ];
 
   List<AccountModel> accModels = [
@@ -226,7 +142,39 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
           await dbClient.insert('$itemTableName', element.toJson(),
               conflictAlgorithm: ConflictAlgorithm.replace);
       });
+    models.forEach((element) {
+      print('********************************************************************************');
+      print(element.unitName);
+      print(element.itemNumber);
+      print(element.conversionFactor);
+      print('********************************************************************************');
+
+    });
     }
+    List<ReceiptModel> x=await getAllReceipts();
+    if(x.isEmpty){
+      // await Hive.openBox(constBoxName);
+      // int startValue=constBox.get(startValueName);
+      // await DatabaseHelper.db.insertReceipt(ReceiptModel(
+      //     receiptId: startValue,
+      //     fAccountId: 2,
+      //     type: 'return',
+      //     netReceipt: 500,
+      //     bankPayment: 44,
+      //     rest: 55,
+      //     cashPayment: 45,
+      //     tax: 78,
+      //     addition: 54,
+      //     discount: 89,
+      //     total: 500,
+      //     saveDate: '45',
+      //     saveTime: '12',
+      //     startDate: '15',
+      //     startTime: '44'));
+      //
+      // await DatabaseHelper.db.deleteReceipt(startValue);
+    }
+
   }
 
   initAccData() async {
@@ -274,7 +222,10 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
       List<Map<String, dynamic>> maps = await dbClient.query(itemTableName);
 
       return maps.isNotEmpty
-          ? maps.map((item) => ItemModel.fromJson(item)).toList()
+          ? maps.map((item) {
+
+            return ItemModel.fromJson(item);
+          }).toList()
           : [];
     } else
       return [];
@@ -308,23 +259,27 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
           'UPDATE $accountTableName SET $columnAccountCurrentBalance = $newBalance WHERE $columnAccountAccId = $id');
   }
 
-  decreaseItemQuantity(double? soldQuantity, int? id) async {
+  decreaseItemQuantity(double? soldQuantity, int? itemNumber) async {
     var dbClient = _database;
     if (dbClient != null)
       await dbClient.execute(
-          'UPDATE $itemTableName SET $columnItemQuantity = $columnItemQuantity - $soldQuantity WHERE $columnItemId = $id');
+          'UPDATE $itemTableName SET $columnItemQuantity = $columnItemQuantity - $soldQuantity WHERE $columnItemNumber = $itemNumber');
   }
 
   decreaseItemReturnableQuantity(double? newReturnAbleQuantity, int? id) async {
     var dbClient = _database;
     if (dbClient != null) {
+      print('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999');
+      print(newReturnAbleQuantity);
+      print(id);
+      print('99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999');
 //       List<Map<String, dynamic>> maps = await dbClient.query(
 //           '''$receiptItemTableName WHERE $columnReceiptItemId==$id''');
 //       ReceiptItemModel receiptItemModel =
 //       maps.map((receipt) => ReceiptItemModel.fromJson(receipt)).toList()[0];
 // print((receiptItemModel.receiptItemId!-1).toString()+'123dsf156sfd1463sgdf43sg15fd34sgf135132gsf32g1fdgfds123gfsd12');
       await dbClient.execute(
-          'UPDATE $receiptItemTableName SET $columnReceiptItemReturnableQuantity = $newReturnAbleQuantity WHERE $columnReceiptItemId = $id');
+          'UPDATE $receiptItemTableName SET $columnReceiptItemReturnableQuantity = $newReturnAbleQuantity WHERE $columnReceiptItemId = ${id!}');
     }
   }
   decreaseItemFreeReturnableQuantity(double? newFreeReturnAbleQuantity, int? id) async {
@@ -336,15 +291,15 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
 //       maps.map((receipt) => ReceiptItemModel.fromJson(receipt)).toList()[0];
 // print((receiptItemModel.receiptItemId!-1).toString()+'123dsf156sfd1463sgdf43sg15fd34sgf135132gsf32g1fdgfds123gfsd12');
       await dbClient.execute(
-          'UPDATE $receiptItemTableName SET $columnReceiptItemFreeReturnableQuantity = $newFreeReturnAbleQuantity WHERE $columnReceiptItemId = $id');
+          'UPDATE $receiptItemTableName SET $columnReceiptItemFreeReturnableQuantity = $newFreeReturnAbleQuantity WHERE $columnReceiptItemFNumber = $id');
     }
   }
 
-  increaseItemQuantity(double? returnedQuantity, int? id) async {
+  increaseItemQuantity(double? returnedQuantity, int? itemNumber) async {
     var dbClient = _database;
     if (dbClient != null)
       await dbClient.execute(
-          'UPDATE $itemTableName SET $columnItemQuantity = $columnItemQuantity + $returnedQuantity WHERE $columnItemId = $id');
+          'UPDATE $itemTableName SET $columnItemQuantity = $columnItemQuantity + $returnedQuantity WHERE $columnItemNumber = $itemNumber');
   }
 
   updateAccount(AccountModel account) async {
@@ -406,6 +361,24 @@ $columnAccountPayByCashOnly BOOLEAN,$columnAccountStopped BOOLEAN);
     } else
       return [];
   }
+  // Future<List<ReceiptModel>> findReceiptJoin(String searchWord)async{
+  //   List<ReceiptModel> results = [];
+  //
+  //   var dbClient = await _database;
+  //
+  //   if (dbClient != null){
+  //     List<Map<String, dynamic>> map = await dbClient.rawQuery('''select $receiptTableName.$columnReceiptType,$accountTableName.$columnAccountName from $receiptTableName inner join $accountTableName on $columnAccountAccId=$columnReceiptFAccountId where $columnAccountName like $searchWord or $columnReceiptId like $searchWord ''');
+  //     results = map.map((receipt) => ReceiptModel.fromJson(receipt)).toList();
+  //     print(map);
+  //     return results;
+  //
+  //   }
+  //   else
+  //
+  //   return [];
+  //
+  //
+  // }
 
   Future<List<ReceiptModel>> findReceipt(String searchWord) async {
     List<ReceiptModel> results = [];

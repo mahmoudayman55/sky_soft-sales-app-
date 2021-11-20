@@ -3,13 +3,15 @@ import '../constants.dart';
 class ReceiptModel {
 
   int? receiptId, fAccountId;
-  String? date,time,type;
+  String? startDate,saveDate,startTime,saveTime,type,accountName;
 
   ReceiptModel(
   {   this.receiptId,
       this.fAccountId,
-      this.date,
-      this.time,
+      this.startDate,
+      this.saveDate,
+      this.startTime,
+      this.saveTime,
       this.total,
       this.discount,
       this.addition,
@@ -17,6 +19,7 @@ class ReceiptModel {
       this.cashPayment,
       this.bankPayment,
       this.rest,
+    this.accountName,
       this.netReceipt,
       this.type});
 
@@ -33,8 +36,10 @@ class ReceiptModel {
     return {
       columnReceiptId: receiptId,
       columnReceiptType:type,
-      columnReceiptDate: date,
-      columnReceiptTime: time,
+      columnReceiptStartDate: startDate,
+      columnReceiptSaveDate: saveDate,
+      columnReceiptStartTime: startTime,
+      columnReceiptSaveTime: saveTime,
       columnReceiptTotal: total,
       columnReceiptDiscount: discount,
       columnReceiptAddition: addition,
@@ -44,13 +49,18 @@ class ReceiptModel {
       columnReceiptRest: rest,
       columnReceiptFAccountId: fAccountId,
       columnReceiptNetReceipt: netReceipt,
+
+
+   //   columnAccountName:accountName
     };
   }
 
   ReceiptModel.fromJson(Map<String, dynamic> map) {
     receiptId = map[columnReceiptId];
-    date = map[columnReceiptDate];
-    time = map[columnReceiptTime];
+    startDate = map[columnReceiptStartDate];
+    saveDate = map[columnReceiptSaveDate];
+    startTime = map[columnReceiptStartTime];
+    saveTime = map[columnReceiptSaveTime];
     type = map[columnReceiptType];
     total = map[columnReceiptTotal];
     discount = map[columnReceiptDiscount];
@@ -61,5 +71,9 @@ class ReceiptModel {
     rest = map[columnReceiptRest];
     fAccountId = map[columnReceiptFAccountId];
     netReceipt = map[columnReceiptNetReceipt];
+
+
+
+  //  accountName=map[columnAccountName];
   }
 }

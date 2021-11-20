@@ -17,6 +17,7 @@ import 'package:skysoft/core/view_model/home_view_model.dart';
 import 'package:skysoft/core/view_model/previous_receipts_view_model.dart';
 import 'package:skysoft/view/account_view.dart';
 import 'package:skysoft/view/add_account_view.dart';
+import 'package:skysoft/view/constants_view.dart';
 import 'package:skysoft/view/item_view.dart';
 import 'package:skysoft/view/previous_receipts_view.dart';
 import 'package:skysoft/view/receipt_view.dart';
@@ -40,7 +41,7 @@ class HomeView extends GetWidget<HomeViewModel> {
                 return Scaffold(
                   backgroundColor: blue5,
                   body: SafeArea(
-                    child: Container(
+                    child: controller.loading.value?Center(child: loadingScreen()): Container(
 
                       padding: EdgeInsets.all(50),
                       child: GridView(
@@ -87,6 +88,13 @@ class HomeView extends GetWidget<HomeViewModel> {
                               height: height*0.3,
                               fontSize: ScreenUtil().setSp(50),
                               text: 'فاتورة مردود'),
+                          defaultButton(
+
+                              function: () => controller.testApi(),
+                              width: width*0.3,background: Colors.lightGreen,
+                              height: height*0.3,
+                              fontSize: ScreenUtil().setSp(50),
+                              text: 'استقبال بيانات (test)'),
                         ],
                       ),
                     ),

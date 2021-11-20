@@ -1,14 +1,17 @@
 import 'package:skysoft/constants.dart';
 
 class ReceiptItemModel{
-  String? rItemName;
-  double? rItemQuantity,rItemPrice,returnableQuantity,freeReturnableQuantity,freeQuantity=0;
-  int? fReceiptId,fItemId,receiptItemId;
+  String? rItemName,unitName;
+  double? conversionFactor,rItemQuantity,rItemPrice,returnableQuantity,freeReturnableQuantity,freeQuantity=0;
+  int? fReceiptId,fItemId,receiptItemId,itemNumber;
   double? rItemDiscount=0;
 
   ReceiptItemModel(
       {
       required this.rItemName,
+        this.conversionFactor=1,
+        this.unitName='قطعة',
+        this.itemNumber,
       required this.rItemQuantity,
       this.returnableQuantity,
         this.freeReturnableQuantity,
@@ -28,6 +31,9 @@ return{
   columnReceiptItemFreeQuantity:freeQuantity,
   columnReceiptItemFReceiptId:fReceiptId,
   columnReceiptFItemId:fItemId,
+  columnReceiptItemUnitName:unitName,
+  columnReceiptItemConversionFactor:conversionFactor,
+  columnReceiptItemFNumber:itemNumber,
   columnReceiptItemReturnableQuantity:returnableQuantity,
   columnReceiptItemFreeReturnableQuantity:freeReturnableQuantity,
   columnReceiptItemId:receiptItemId
@@ -44,6 +50,9 @@ return{
     rItemDiscount=map[columnReceiptItemDiscount];
     rItemPrice=map[columnReceiptItemPrice];
     fItemId=map[columnReceiptFItemId];
+    itemNumber=map[ columnReceiptItemFNumber];
+    conversionFactor=map[ columnReceiptItemConversionFactor];
+    unitName=map[ columnReceiptItemUnitName];
     fReceiptId=map[columnReceiptItemFReceiptId];
     receiptItemId=map[columnReceiptItemId];
     freeQuantity=map[columnReceiptItemFreeQuantity];

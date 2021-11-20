@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:intl/intl.dart' as intl;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,7 @@ class SearchAccountView extends GetWidget<ReceiptViewModel> {
                             children: [
                               Row(
                                 children: [
+                                  ElevatedButton(onPressed: ()=>Get.back(), child: Text('back')),
 
                                   Container(
                                     alignment: Alignment.center,
@@ -199,12 +201,28 @@ class SearchAccountView extends GetWidget<ReceiptViewModel> {
                                         controller.accountSearchResultList.length,
                                             (index) => DataRow(
                                               onSelectChanged: (_) async {
-
-                                                await controller.setReceiptNumber();
-                                                controller.setReceiptAccount=controller.accountSearchResultList[index];
-                                               controller.setAccountSearchResultList=await DatabaseHelper.db.getAllAccounts();
-                                                Get.to(ReceiptView());
-                                                Get.put(ReceiptView(),permanent: true);
+if(controller.balanceBefore!=0){
+  controller.setReceiptAccount=controller.accountSearchResultList[index];
+  controller.updateNetReceipt();
+  Get.off(ReceiptView());
+}
+else{
+  controller. setStartDate=intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
+  controller. setStartTime=intl.DateFormat('kk:mm').format(DateTime.now());
+                                                await controller
+                                                    .setReceiptNumber();
+                                                controller
+                                                    .setReceiptAccount = controller
+                                                        .accountSearchResultList[
+                                                    index];
+                                                controller
+                                                        .setAccountSearchResultList =
+                                                    await DatabaseHelper.db
+                                                        .getAllAccounts();
+                                               // controller.updateNetReceipt();
+                                                Get.to(()=>ReceiptView());
+                                              }
+                                              // Get.put(ReceiptView(),permanent: true);
                                               },
                                             color: MaterialStateProperty
                                                 .resolveWith<Color>(

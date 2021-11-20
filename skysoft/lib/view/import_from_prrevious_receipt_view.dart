@@ -297,7 +297,7 @@ class ImportFromPreviousReceiptsView
                                                               controller
                                                                       .allReceipts[
                                                                           index]
-                                                                      .date // تاريخ الفاتورة
+                                                                      .startDate // تاريخ الفاتورة
 
                                                                       .toString() +
                                                                   ' ',
@@ -308,7 +308,7 @@ class ImportFromPreviousReceiptsView
                                                               controller
                                                                   .allReceipts[
                                                                       index]
-                                                                  .time // وقت الفاتورة
+                                                                  .saveTime // وقت الفاتورة
                                                                   .toString(),
                                                               style:
                                                                   rowItemElementTextStyle(),

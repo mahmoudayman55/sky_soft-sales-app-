@@ -206,7 +206,7 @@ class SearchAccountReturnReceiptView extends GetWidget<ReturnReceiptViewModel> {
                                                     controller.setReceiptAccount=controller.accountSearchResultList[index];
                                                     controller.setAccountSearchResultList=await DatabaseHelper.db.getAllAccounts();
                                                     Get.to(ReturnReceiptView());
-                                                  //  Get.put(ReceiptView(),permanent: true);
+                                                    Get.put(ReceiptView(),permanent: true);
                                                   },
                                                   color: MaterialStateProperty
                                                       .resolveWith<Color>(

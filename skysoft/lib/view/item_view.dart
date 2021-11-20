@@ -171,6 +171,11 @@ class ItemsView extends GetWidget<ItemsViewModel> {
                                             'الكمية',
                                             style: rowItemTextStyle(),
                                           ),
+                                        ),     DataColumn(
+                                          label: Text(
+                                            'الوحده',
+                                            style: rowItemTextStyle(),
+                                          ),
                                         ),
                                         DataColumn(
                                           label: Text(
@@ -216,33 +221,81 @@ class ItemsView extends GetWidget<ItemsViewModel> {
                                                   .shade300; // Use default value for other states and odd rows.
                                             }),
                                             cells: [
-                                              DataCell(Text(controller
-                                                  .itemModelList[index].itemId
-                                                  .toString(),style: rowItemElementTextStyle(),)),
-                                              DataCell(Text(controller
-                                                  .itemModelList[index].itemName
-                                                  .toString(),style: rowItemElementTextStyle(),)),
-                                              DataCell(Text(controller
-                                                  .itemModelList[index].itemQuantity
-                                                  .toString(),style: rowItemElementTextStyle(),)),
-                                              DataCell(Text(controller
-                                                  .itemModelList[index]
-                                                  .wholesalePrice
-                                                  .toString(),style: rowItemElementTextStyle(),)),
-                                              DataCell(Text(controller
-                                                  .itemModelList[index].sellingPrice
-                                                  .toString(),style: rowItemElementTextStyle(),)),
-                                              DataCell(Text(controller
-                                                  .itemModelList[index]
-                                                  .avgPurchasePrice
-                                                  .toString(),style: rowItemElementTextStyle(),)),
-                                              DataCell(Text(controller
-                                                  .itemModelList[index]
-                                                  .lastPurchasePrice
-                                                  .toString(),style: rowItemElementTextStyle(),)),
-                                              DataCell(Text(controller
-                                                  .itemModelList[index].itemBarcode
-                                                  .toString(),style: rowItemElementTextStyle(),)),
+                                              DataCell(Text(
+                                                controller
+                                                    .itemModelList[
+                                                index]
+                                                    .itemId
+                                                    .toString(),
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
+                                              DataCell(Text(
+                                                controller
+                                                    .itemModelList[
+                                                index]
+                                                    .itemName
+                                                    .toString(),
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
+                                              DataCell(Text(
+                                                controller
+                                                    .itemModelList[
+                                                index]
+                                                    .conversionFactor ==
+                                                    1
+                                                    ? '${controller.itemModelList[index].itemQuantity} '
+                                                    : '${(controller.itemModelList[index].itemQuantity! / controller.itemModelList[index].conversionFactor!.toDouble()).floor()} ' +
+                                                    (controller.itemModelList[index].itemQuantity! %
+                                                        controller
+                                                            .itemModelList[index]
+                                                            .conversionFactor!
+                                                            .toDouble() ==
+                                                        0
+                                                        ? ''
+                                                        : 'و ${controller.itemModelList[index].itemQuantity! % controller.itemModelList[index].conversionFactor!.toDouble()}'),
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
+                                              DataCell(Text(
+                                                controller
+                                                    .itemModelList[
+                                                index]
+                                                    .unitName
+                                                    .toString(),
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
+                                              DataCell(Text(
+                                                '${controller.itemModelList[index].wholesalePrice!   } ',
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
+                                              DataCell(Text(
+                                                '${controller.itemModelList[index].sellingPrice!      } ',
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
+                                              DataCell(Text(
+                                                '${controller.itemModelList[index].avgPurchasePrice!  } ',
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
+                                              DataCell(Text(
+                                                '${controller.itemModelList[index].lastPurchasePrice! } ',
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
+                                              DataCell(Text(
+                                                controller
+                                                    .itemModelList[
+                                                index]
+                                                    .itemBarcode
+                                                    .toString(),
+                                                style:
+                                                rowItemElementTextStyle(),
+                                              )),
                                             ]),
                                       ).toList()),
                                 ),

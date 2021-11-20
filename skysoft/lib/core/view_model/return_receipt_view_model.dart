@@ -75,8 +75,8 @@ setReceiptType='return';
       /// update items quantities in database
       waitingItemsList.forEach((element) {
         DatabaseHelper.db.increaseItemQuantity(
-            (element.quantity! + double.parse(element.freeQuantity.toString())),
-            element.id);
+            (element.quantity! + double.parse(element.freeQuantity.toString()))*element.conversionFactor!,
+            element.itemNumber);
       });
 
       /// set rest of receipt
@@ -87,8 +87,10 @@ setReceiptType='return';
     addNewReceipt(ReceiptModel(
     receiptId: receiptNumber,
     fAccountId: receiptAccount.accId,
-    date: intl.DateFormat('yyyy-MM-dd').format(DateTime.now()),
-    time: intl.DateFormat('kk:mm').format(DateTime.now()),
+    startDate: startDate,
+    startTime: saveTime,
+    saveDate: intl.DateFormat('yyyy-MM-dd').format(DateTime.now()),
+    saveTime: intl.DateFormat('kk:mm').format(DateTime.now()),
     total: total,
     discount: totalDiscount,
     addition: addition,

@@ -118,7 +118,7 @@ class ReceiptDetailsView extends GetWidget<PreviousReceiptsViewModel> {
                                       Text(
                                         controller.returnReceiptFlag
                                             ? controller.date
-                                            : receiptModel.date.toString(),
+                                            : receiptModel.saveDate.toString(),
                                         style: rowItemTextStyle(),
                                       ),
                                       SizedBox(
@@ -131,7 +131,7 @@ class ReceiptDetailsView extends GetWidget<PreviousReceiptsViewModel> {
                                       Text(
                                         controller.returnReceiptFlag
                                             ? controller.time
-                                            : receiptModel.time.toString(),
+                                            : receiptModel.saveTime.toString(),
                                         style: rowItemTextStyle(),
                                       ),
                                       SizedBox(
@@ -493,6 +493,11 @@ class ReceiptDetailsView extends GetWidget<PreviousReceiptsViewModel> {
                                                       'كمية',
                                                       style: rowItemTextStyle(),
                                                     ),
+                                                  ),  DataColumn(
+                                                    label: Text(
+                                                      'الوحدة',
+                                                      style: rowItemTextStyle(),
+                                                    ),
                                                   ),
 
                                                   DataColumn(
@@ -715,6 +720,15 @@ class ReceiptDetailsView extends GetWidget<PreviousReceiptsViewModel> {
                                                           //         decimal:
                                                           //         false),
                                                           //     autofocus: false)),
+                                                          DataCell(Text(
+                                                            controller
+                                                                .receiptItems[
+                                                                    index]
+                                                                .unitName!
+                                                                ,
+                                                            style:
+                                                                rowItemElementTextStyle(),
+                                                          )),
                                                           DataCell(Text(
                                                             controller
                                                                 .receiptItems[

@@ -41,8 +41,8 @@ class AccountModel {
        this.stopped});
 toJson(){
   return{
-//strings
 
+//strings
  columnAccountName:name,
  columnAccountNote:note,
  columnAccountAccBarcode:barcode,

@@ -120,7 +120,7 @@ class ReturnReceiptView extends GetWidget<ReturnReceiptViewModel> {
                                     style: labelsInReceiptRowsStyle(),
                                   ),
                                   Text(
-                                    '${controller.date}',
+                                    '${controller.startDate}',
                                     style: rowItemTextStyle(),
                                   ),
                                   SizedBox(
@@ -131,7 +131,7 @@ class ReturnReceiptView extends GetWidget<ReturnReceiptViewModel> {
                                     style: labelsInReceiptRowsStyle(),
                                   ),
                                   Text(
-                                    '${controller.time}',
+                                    '${controller.startTime}',
                                     style: rowItemTextStyle(),
                                   ),
                                   SizedBox(

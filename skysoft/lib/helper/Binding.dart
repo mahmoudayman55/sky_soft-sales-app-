@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:skysoft/core/view_model/add_account_view_model.dart';
 import 'package:skysoft/core/view_model/add_item_view_model.dart';
+import 'package:skysoft/core/view_model/constants_view_model.dart';
 import 'package:skysoft/core/view_model/home_view_model.dart';
 import 'package:skysoft/core/view_model/previous_receipts_view_model.dart';
 import 'package:skysoft/core/view_model/receipt_view_model.dart';
@@ -15,6 +16,7 @@ class Binding extends Bindings{
     Get.lazyPut(() => ReceiptViewModel(),fenix: true);
     Get.lazyPut(() => PreviousReceiptsViewModel(),fenix: true);
     Get.lazyPut(() => ReturnReceiptViewModel(),fenix: true);
+    Get.lazyPut(() => ConstantsViewModel(),fenix: true);
 
 
   }

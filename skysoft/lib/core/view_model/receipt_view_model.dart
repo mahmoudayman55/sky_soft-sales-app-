@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -58,9 +59,13 @@ class ReceiptViewModel extends GetxController {
     DatabaseHelper.db.initAccData();
     DatabaseHelper.db.initItemsData();
 
+
     update();
     searchForAccount();
     if (data != null) {
+
+      setStartDate=intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
+      setStartTime=intl.DateFormat('kk:mm').format(DateTime.now());
       //setReceiptNumber();
       _receiptNumber = data[2] + 2;
       print(data.toString() + ' argumentsssss');
@@ -213,21 +218,30 @@ bool loading=false;
     _allItems = value;
   }
 
-  String _date = intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String _startDate = '';
+  String _saveDate = '';
 
-  set setDate(String value) {
-    _date = value;
+  String get saveDate => _saveDate;
+
+  set setSaveDate(String value) {
+    _saveDate = value;
   }
 
-  String _time = intl.DateFormat('kk:mm').format(DateTime.now());
+  String _saveTime = '';
 
-  set setTime(String value) {
-    _time = value;
+  set setStartDate(String value) {
+    _startDate = value;
   }
 
-  String get time => _time;
+  String _startTime = '';
 
-  String get date => _date;
+  set setStartTime(String value) {
+    _startTime = value;
+  }
+
+  String get startTime => _startTime;
+
+  String get startDate => _startDate;
 
   String _accountName = 'العميل';
 
@@ -243,12 +257,16 @@ bool loading=false;
   AccountModel get receiptAccount => _receiptAccount;
 
   int _receiptNumber = 0;
+int receiptNumberStartValue=0;
 
   set receiptNumberSetter(int value) {
+
     _receiptNumber = value;
   }
 
-  int get receiptNumber => _receiptNumber;
+  int get receiptNumber {
+    return _receiptNumber;
+  }
 
   set setReceiptAccount(AccountModel value) {
     _receiptAccount = value;
@@ -561,23 +579,40 @@ bool loading=false;
     print('file saved');
   }
 
-  updateNetReceipt() {
-    String currentBalance = receiptAccount.currentBalance.toString();
+  updateNetReceipt() async {
+    await Hive.openBox(constBoxName);
+    if(constBox.get(startValueName)!=null){
+      receiptNumberStartValue=constBox.get(startValueName);
+    }
+   // String currentBalance = receiptAccount.currentBalance.toString();
     setNetReceipt = ((total + addition) - totalDiscount + tax);
-    setBalanceAfter = receiptAccount.currentBalance! + netReceipt - cashPayment;
+    // _cashPayment=0;
+    // _totalDiscount=0;
+    // _addition=0;
+    // _tax=0;
+    // cashPaymentController.text='0';
+    // totalTaxController.text='0';
+    // totalDiscountController.text='0';
+    // totalAdditionController.text='0';
     setRest = netReceipt - cashPayment;
+    setBalanceAfter = receiptAccount.currentBalance! + netReceipt - cashPayment;
+
     update();
   }
 
   resetAll() {
-    setDate = intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
-    setTime = intl.DateFormat('kk:mm').format(DateTime.now());
+    setStartDate= '';
+    setStartTime = '';
+    setSaveDate='';
+    setSaveTime='';
     waitingItemsList.clear();
     enabled = true;
     calculateTotal();
     updateNetReceipt();
     updateItemCount();
     setTotal = 0;
+    setBalanceBefore=0;
+    setBalanceAfter=0;
     setRest = 0;
     setAddition = 0;
     setTax = 0;
@@ -604,9 +639,12 @@ bool loading=false;
     waitingItemsList.forEach((element) async {
       await dbHelper.insertReceiptItem(ReceiptItemModel(
         fItemId: element.id,
+        conversionFactor: element.conversionFactor,
+        unitName: element.unitName,
+        itemNumber: element.itemNumber,
         returnableQuantity: element.quantity,
-        freeReturnableQuantity: element.freeQuantity,
-        fReceiptId: _receiptNumber,
+        freeReturnableQuantity: element.freeQuantity!/element.conversionFactor!.toDouble(),
+        fReceiptId: _receiptNumber+receiptNumberStartValue,
         rItemDiscount: element.discount,
         freeQuantity: element.freeQuantity,
         rItemName: element.name,
@@ -644,8 +682,8 @@ bool loading=false;
       /// update items quantities in database
       waitingItemsList.forEach((element) {
         DatabaseHelper.db.decreaseItemQuantity(
-            (element.quantity! + double.parse(element.freeQuantity.toString())),
-            element.id);
+            (element.quantity! + double.parse(element.freeQuantity.toString()))*element.conversionFactor!,
+            element.itemNumber);
       });
 
       /// set rest of receipt
@@ -654,9 +692,11 @@ bool loading=false;
       /// insert the new receipt into the database
       showBalanceAfterReceipt = true;
       addNewReceipt(ReceiptModel(
-          receiptId: _receiptNumber,
           fAccountId: receiptAccount.accId,
-          date: date,
+          startDate: startDate,
+          startTime: startTime,
+          saveDate:intl.DateFormat('yyyy-MM-dd').format(DateTime.now()) ,
+          saveTime: intl.DateFormat('kk:mm').format(DateTime.now()),
           total: total,
           discount: totalDiscount,
           addition: addition,
@@ -665,7 +705,6 @@ bool loading=false;
           bankPayment: bankPayment,
           rest: rest,
           netReceipt: netReceipt,
-          time: time,
           type: receiptType));
 
       enabled = false;
@@ -880,6 +919,9 @@ bool loading=false;
         quantityTextController: TextEditingController(text: '1'),
         discountTextController: TextEditingController(text: '0'),
         freeQuantity: 0,
+        itemNumber: item.itemNumber,
+        unitName: item.unitName,
+        conversionFactor: item.conversionFactor,
         id: item.itemId,
         name: item.itemName,
         price: item.sellingPrice,
@@ -957,7 +999,10 @@ bool loading=false;
   }
 
   searchForAccount() async {
-    var dbHelper = DatabaseHelper.db;
+    await Hive.openBox(constBoxName);
+    if(constBox.get(startValueName)!=null){
+      receiptNumberStartValue=constBox.get(startValueName);
+    }    var dbHelper = DatabaseHelper.db;
     _accountSearchResultList = accountSearchQuery.isEmpty
         ? await dbHelper.getAllAccounts()
         : await dbHelper.findAccounts(accountSearchQuery);
@@ -1281,5 +1326,11 @@ bool loading=false;
 
   set setRest(double value) {
     _rest = value;
+  }
+
+  String get saveTime => _saveTime;
+
+  set setSaveTime(String value) {
+    _saveTime = value;
   }
 }

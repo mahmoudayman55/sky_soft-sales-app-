@@ -53,7 +53,7 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                   child: Directionality(
                     textDirection: TextDirection.rtl,
                     child: Container(
-                      padding: EdgeInsets.all(12),
+                      padding: EdgeInsets.all(5),
                       child: Column(
                         children: [
                           // Align(
@@ -121,7 +121,7 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                                     style: labelsInReceiptRowsStyle(),
                                   ),
                                   Text(
-                                    '${controller.date}',
+                                    '${controller.startDate}',
                                     style: rowItemTextStyle(),
                                   ),
                                   SizedBox(
@@ -132,7 +132,7 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                                     style: labelsInReceiptRowsStyle(),
                                   ),
                                   Text(
-                                    '${controller.time}',
+                                    '${controller.startTime}',
                                     style: rowItemTextStyle(),
                                   ),
                                   SizedBox(
@@ -206,7 +206,7 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                                           style: labelsInReceiptRowsStyle(),
                                         ),
                                         Text(
-                                          '${controller.receiptNumber}',
+                                          '${controller.receiptNumber+controller.receiptNumberStartValue}',
                                           style: rowItemTextStyle(),
                                         ),
                                       ],
@@ -217,12 +217,12 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                             ),
                           ),
                           SizedBox(
-                            height: height * 0.02,
+                            height: height * 0.01,
                           ),
                           Container(
                             width: width * 0.99,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Column(
@@ -231,13 +231,13 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                                       builder: (controller) => GestureDetector(
                                           onTap: controller.enabled
                                               ? () async {
-                                                  controller
-                                                          .setItemsSearchResultList =
-                                                      await DatabaseHelper.db
-                                                          .getAllItems();
-                                                  controller.itemSearchQuery =
-                                                      '';
-                                                  Get.dialog(SearchItemView());
+                                            controller
+                                                .setItemsSearchResultList =
+                                            await DatabaseHelper.db
+                                                .getAllItems();
+                                            controller.itemSearchQuery =
+                                            '';
+                                            Get.dialog(SearchItemView(),);
                                                 }
                                               : null,
                                           child: Icon(
@@ -272,8 +272,8 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                                                             if(value==null){
                                                              return;
                                                             }
-                                                        controller.setWaitingItemsList
-                                                        =await value;
+
+                                                        controller.waitingItemsList.addAll(value);
 
                                                       }
                                                         );
@@ -372,214 +372,278 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                                     ),
                                   ],
                                 ),
-                                Container(
-                                  height: height * 0.4,
-                                  width: width * 0.9,
-                                  child: GetBuilder<ReceiptViewModel>(
-                                    builder: (controller) =>
-                                        SingleChildScrollView(
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Container(
-                                          width: width * .92,
-                                          child: DataTable(
-                                              showCheckboxColumn:
-                                                  controller.enabled,
-                                              dividerThickness: 1,
-                                              dataRowHeight: height * 0.07,
-                                              headingRowHeight: height * 0.07,
-                                              columnSpacing: width * 0.04,
-                                              headingRowColor:
-                                                  MaterialStateColor
-                                                      .resolveWith((states) {
-                                                return controller.receiptType ==
-                                                        'sales'
-                                                    ? Colors.lightGreen
-                                                    : Colors.red;
-                                              }),
-                                              columns: [
-                                                DataColumn(
-                                                  label: Text(
-                                                    'الرقم',
-                                                    style: rowItemTextStyle(),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    height: height * 0.55,
+                                    width: width * 0.935,
+                                    child: GetBuilder<ReceiptViewModel>(
+                                      builder: (controller) =>
+                                          SingleChildScrollView(
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Container(
+                                            width: width * .92,
+                                            child: DataTable(
+                                                showCheckboxColumn:
+                                                    controller.enabled,
+                                                dividerThickness: 1,
+                                                dataRowHeight: height * 0.07,
+                                                headingRowHeight: height * 0.07,
+                                                columnSpacing: width * 0.04,
+                                                headingRowColor:
+                                                    MaterialStateColor
+                                                        .resolveWith((states) {
+                                                  return controller.receiptType ==
+                                                          'sales'
+                                                      ? Colors.lightGreen
+                                                      : Colors.red;
+                                                }),
+                                                columns: [
+                                                  DataColumn(
+                                                    label: Text(
+                                                      'الرقم',
+                                                      style: rowItemTextStyle(),
+                                                    ),
                                                   ),
-                                                ),
-                                                DataColumn(
-                                                  label: Text(
-                                                    'الصنف',
-                                                    style: rowItemTextStyle(),
+                                                  DataColumn(
+                                                    label: Text(
+                                                      'الصنف',
+                                                      style: rowItemTextStyle(),
+                                                    ),
                                                   ),
-                                                ),
-                                                DataColumn(
-                                                  label: Text(
-                                                    'الكمية',
-                                                    style: rowItemTextStyle(),
+                                                  DataColumn(
+                                                    label: Text(
+                                                      'الكمية',
+                                                      style: rowItemTextStyle(),
+                                                    ),
+                                                  ),    DataColumn(
+                                                    label: Text(
+                                                      'الوحدة',
+                                                      style: rowItemTextStyle(),
+                                                    ),
                                                   ),
-                                                ),
-                                                DataColumn(
-                                                  label: Text(
-                                                    'السعر',
-                                                    style: rowItemTextStyle(),
+                                                  DataColumn(
+                                                    label: Text(
+                                                      'السعر',
+                                                      style: rowItemTextStyle(),
+                                                    ),
                                                   ),
-                                                ),
-                                                DataColumn(
-                                                  label: Text(
-                                                    'الخصم',
-                                                    style: rowItemTextStyle(),
+                                                  DataColumn(
+                                                    label: Text(
+                                                      'الخصم',
+                                                      style: rowItemTextStyle(),
+                                                    ),
                                                   ),
-                                                ),
-                                                DataColumn(
-                                                  label: Text(
-                                                    'القيمه',
-                                                    style: rowItemTextStyle(),
+                                                  DataColumn(
+                                                    label: Text(
+                                                      'القيمه',
+                                                      style: rowItemTextStyle(),
+                                                    ),
                                                   ),
-                                                ),
-                                                DataColumn(
-                                                  label: Text(
-                                                    'ك مجانية',
-                                                    style: rowItemTextStyle(),
+                                                  DataColumn(
+                                                    label: Text(
+                                                      'ك مجانية',
+                                                      style: rowItemTextStyle(),
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                              rows: List<DataRow>.generate(
-                                                controller
-                                                    .waitingItemsList.length,
-                                                (index) {
-                                                  var quantityController =
-                                                      TextEditingController(
-                                                          text: '1');
+                                                ],
+                                                rows: List<DataRow>.generate(
+                                                  controller
+                                                      .waitingItemsList.length,
+                                                  (index) {
+                                                    var quantityController =
+                                                        TextEditingController(
+                                                            text: '1');
 
-                                                  return DataRow(
-                                                      selected: controller
-                                                          .selectedItems
-                                                          .contains(controller
-                                                                  .waitingItemsList[
-                                                              index]),
-                                                      onSelectChanged:
-                                                          (isSelected) {
-                                                        final isAdding =
-                                                            isSelected !=
-                                                                    null &&
-                                                                isSelected;
-                                                        controller.itemIsAdding(
-                                                            index,
-                                                            controller
+                                                    return DataRow(
+                                                        selected: controller
+                                                            .selectedItems
+                                                            .contains(controller
                                                                     .waitingItemsList[
-                                                                index],
-                                                            isAdding);
-                                                      },
-                                                      color: MaterialStateProperty
-                                                          .resolveWith<
-                                                              Color>((Set<
-                                                                  MaterialState>
-                                                              states) {
-                                                        // Even rows will have a grey color.
-                                                        if (index % 2 == 0)
-                                                          return Colors
-                                                              .grey.shade50;
-                                                        return Colors.grey
-                                                            .shade300; // Use default value for other states and odd rows.
-                                                      }),
-                                                      cells: [
-                                                        DataCell(Text(
-                                                          ///رقم الصنف
-                                                          controller
-                                                              .waitingItemsList[
-                                                                  index]
-                                                              .id
-                                                              .toString(),
-                                                          style:
-                                                              rowItemElementTextStyle(),
-                                                        )),
-                                                        DataCell(Text(
-                                                          ///الاسم
-                                                          controller
-                                                              .waitingItemsList[
-                                                                  index]
-                                                              .name
-                                                              .toString(),
-                                                          style:
-                                                              rowItemElementTextStyle(),
-                                                        )),
-                                                        DataCell(TextFormField(
-                                                            inputFormatters: [
-                                                              LengthLimitingTextInputFormatter(
-                                                                  8),
-                                                            ],
-                                                            enabled: controller
-                                                                .enabled,
-                                                            controller: controller
+                                                                index]),
+                                                        onSelectChanged:
+                                                            (isSelected) {
+                                                          final isAdding =
+                                                              isSelected !=
+                                                                      null &&
+                                                                  isSelected;
+                                                          controller.itemIsAdding(
+                                                              index,
+                                                              controller
+                                                                      .waitingItemsList[
+                                                                  index],
+                                                              isAdding);
+                                                        },
+                                                        color: MaterialStateProperty
+                                                            .resolveWith<
+                                                                Color>((Set<
+                                                                    MaterialState>
+                                                                states) {
+                                                          // Even rows will have a grey color.
+                                                          if (index % 2 == 0)
+                                                            return Colors
+                                                                .grey.shade50;
+                                                          return Colors.grey
+                                                              .shade300; // Use default value for other states and odd rows.
+                                                        }),
+                                                        cells: [
+                                                          DataCell(Text(
+                                                            ///رقم الصنف
+                                                            controller
                                                                 .waitingItemsList[
                                                                     index]
-                                                                .quantityTextController,
-                                                            onTap: () => controller
-                                                                .itemQuantityOnTap(
-                                                                    index),
+                                                                .id
+                                                                .toString(),
+                                                            style:
+                                                                rowItemElementTextStyle(),
+                                                          )),
+                                                          DataCell(Text(
+                                                            ///الاسم
+                                                            controller
+                                                                .waitingItemsList[
+                                                                    index]
+                                                                .name
+                                                                .toString(),
+                                                            style:
+                                                                rowItemElementTextStyle(),
+                                                          )),
+                                                          DataCell(TextFormField(
+                                                              inputFormatters: [
+                                                                LengthLimitingTextInputFormatter(
+                                                                    8),
+                                                              ],
+                                                              enabled: controller
+                                                                  .enabled,
+                                                              controller: controller
+                                                                  .waitingItemsList[
+                                                                      index]
+                                                                  .quantityTextController,
+                                                              onTap: () => controller
+                                                                  .itemQuantityOnTap(
+                                                                      index),
 
-                                                            ///الكميه
-                                                            style: TextStyle(
-                                                                fontSize: ScreenUtil()
-                                                                    .setSp(35)),
-                                                            // inputFormatters: [
-                                                            //   FilteringTextInputFormatter
-                                                            //       .digitsOnly
-                                                            // ],
-                                                            onFieldSubmitted: (value) =>
-                                                                controller
-                                                                    .itemQuantityOnSubmitted(
-                                                                        value,
-                                                                        index),
-                                                            onChanged: (value) =>
-                                                                controller
-                                                                    .itemQuantityOnChanged(
-                                                                        value,
-                                                                        index),
-                                                            // initialValue: controller
-                                                            //     .waitingItemsList[
-                                                            // index]
-                                                            //     .quantity
-                                                            //     .toString(),
+                                                              ///الكميه
+                                                              style: TextStyle(
+                                                                  fontSize: ScreenUtil()
+                                                                      .setSp(35)),
+                                                              // inputFormatters: [
+                                                              //   FilteringTextInputFormatter
+                                                              //       .digitsOnly
+                                                              // ],
+                                                              onFieldSubmitted: (value) =>
+                                                                  controller
+                                                                      .itemQuantityOnSubmitted(
+                                                                          value,
+                                                                          index),
+                                                              onChanged: (value) =>
+                                                                  controller
+                                                                      .itemQuantityOnChanged(
+                                                                          value,
+                                                                          index),
+                                                              // initialValue: controller
+                                                              //     .waitingItemsList[
+                                                              // index]
+                                                              //     .quantity
+                                                              //     .toString(),
+                                                              keyboardType:
+                                                                  TextInputType
+                                                                      .number,
+                                                              autofocus: false)),
+                                                          DataCell(Text(
+                                                            controller
+                                                                .waitingItemsList[
+                                                                    index]
+                                                                .unitName.toString(),
+                                                            style:
+                                                                rowItemElementTextStyle(),
+                                                          )),      DataCell(Text(
+                                                            controller
+                                                                .waitingItemsList[
+                                                                    index]
+                                                                .price!
+                                                                .toStringAsFixed(
+                                                                    3),
+                                                            style:
+                                                                rowItemElementTextStyle(),
+                                                          )),
+
+                                                          /// السعر
+                                                          DataCell(TextFormField(
+                                                            enabled: controller
+                                                                .enabled,
+
+                                                            /// الخصم
                                                             keyboardType:
                                                                 TextInputType
                                                                     .number,
-                                                            autofocus: false)),
-                                                        DataCell(Text(
-                                                          controller
-                                                              .waitingItemsList[
-                                                                  index]
-                                                              .price!
-                                                              .toStringAsFixed(
-                                                                  3),
-                                                          style:
-                                                              rowItemElementTextStyle(),
-                                                        )),
-
-                                                        /// السعر
-                                                        DataCell(TextFormField(
-                                                          enabled: controller
-                                                              .enabled,
-
-                                                          /// الخصم
-                                                          keyboardType:
-                                                              TextInputType
-                                                                  .number,
-                                                          onFieldSubmitted:
-                                                              (value) {
-                                                            if (controller
-                                                                .waitingItemsList[
-                                                                    index]
-                                                                .discountTextController
-                                                                .text
-                                                                .isEmpty) {
-                                                              controller
+                                                            onFieldSubmitted:
+                                                                (value) {
+                                                              if (controller
                                                                   .waitingItemsList[
                                                                       index]
                                                                   .discountTextController
-                                                                  .text = '0';
+                                                                  .text
+                                                                  .isEmpty) {
+                                                                controller
+                                                                    .waitingItemsList[
+                                                                        index]
+                                                                    .discountTextController
+                                                                    .text = '0';
+                                                                controller
+                                                                    .waitingItemsList[
+                                                                        index]
+                                                                    .discount = 0;
+                                                                controller
+                                                                    .waitingItemsList[
+                                                                        index]
+                                                                    .value = controller
+                                                                            .waitingItemsList[
+                                                                                index]
+                                                                            .quantity!
+                                                                            .toDouble() *
+                                                                        controller
+                                                                            .waitingItemsList[
+                                                                                index]
+                                                                            .price!
+                                                                            .toDouble() -
+                                                                    controller
+                                                                        .waitingItemsList[
+                                                                            index]
+                                                                        .discount!
+                                                                        .toDouble();
+                                                                // controller.update();
+                                                                controller
+                                                                    .calculateTotal();
+                                                              }
                                                               controller
-                                                                  .waitingItemsList[
-                                                                      index]
-                                                                  .discount = 0;
+                                                                  .updateNetReceipt();
+                                                            },
+                                                            controller: controller
+                                                                .waitingItemsList[
+                                                                    index]
+                                                                .discountTextController,
+                                                            onTap: () => controller
+                                                                    .waitingItemsList[
+                                                                        index]
+                                                                    .discountTextController
+                                                                    .selection =
+                                                                TextSelection(
+                                                                    baseOffset: 0,
+                                                                    extentOffset: controller
+                                                                        .waitingItemsList[
+                                                                            index]
+                                                                        .discountTextController
+                                                                        .value
+                                                                        .text
+                                                                        .length),
+                                                            onChanged: (value) {
+                                                              controller
+                                                                      .waitingItemsList[
+                                                                          index]
+                                                                      .discount =
+                                                                  double.parse(
+                                                                      value);
                                                               controller
                                                                   .waitingItemsList[
                                                                       index]
@@ -601,111 +665,62 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                                                               // controller.update();
                                                               controller
                                                                   .calculateTotal();
-                                                            }
-                                                            controller
-                                                                .updateNetReceipt();
-                                                          },
-                                                          controller: controller
+                                                              controller
+                                                                  .updateNetReceipt();
+                                                            },
+                                                          )),
+
+                                                          DataCell(Text(controller
+
+                                                              ///القيمه
                                                               .waitingItemsList[
                                                                   index]
-                                                              .discountTextController,
-                                                          onTap: () => controller
+                                                              .value!
+                                                              .toStringAsFixed(
+                                                                  3))),
+                                                          DataCell(TextFormField(
+                                                              inputFormatters: [
+                                                                LengthLimitingTextInputFormatter(
+                                                                    8),
+                                                              ],
+                                                              enabled: controller
+                                                                  .enabled,
+                                                              controller: controller
                                                                   .waitingItemsList[
                                                                       index]
-                                                                  .discountTextController
-                                                                  .selection =
-                                                              TextSelection(
-                                                                  baseOffset: 0,
-                                                                  extentOffset: controller
-                                                                      .waitingItemsList[
-                                                                          index]
-                                                                      .discountTextController
-                                                                      .value
-                                                                      .text
-                                                                      .length),
-                                                          onChanged: (value) {
-                                                            controller
-                                                                    .waitingItemsList[
-                                                                        index]
-                                                                    .discount =
-                                                                double.parse(
-                                                                    value);
-                                                            controller
-                                                                .waitingItemsList[
-                                                                    index]
-                                                                .value = controller
-                                                                        .waitingItemsList[
-                                                                            index]
-                                                                        .quantity!
-                                                                        .toDouble() *
-                                                                    controller
-                                                                        .waitingItemsList[
-                                                                            index]
-                                                                        .price!
-                                                                        .toDouble() -
-                                                                controller
-                                                                    .waitingItemsList[
-                                                                        index]
-                                                                    .discount!
-                                                                    .toDouble();
-                                                            // controller.update();
-                                                            controller
-                                                                .calculateTotal();
-                                                            controller
-                                                                .updateNetReceipt();
-                                                          },
-                                                        )),
+                                                                  .freeQuantityTextController,
+                                                              onTap: () => controller
+                                                                  .itemFreeQuantityOnTap(
+                                                                      index),
+                                                              onFieldSubmitted: (value) =>
+                                                                  controller.itemFreeQuantityOnSubmitted(
+                                                                      value, index),
+                                                              onChanged: (value) =>
+                                                                  controller.itemFreeQuantityOnChanged(
+                                                                      value, index),
 
-                                                        DataCell(Text(controller
+                                                              ///الكميه
+                                                              style: TextStyle(
+                                                                  fontSize: ScreenUtil()
+                                                                      .setSp(35)),
+                                                              // inputFormatters: [
+                                                              //   FilteringTextInputFormatter
+                                                              //       .digitsOnly
+                                                              // ],
 
-                                                            ///القيمه
-                                                            .waitingItemsList[
-                                                                index]
-                                                            .value!
-                                                            .toStringAsFixed(
-                                                                3))),
-                                                        DataCell(TextFormField(
-                                                            inputFormatters: [
-                                                              LengthLimitingTextInputFormatter(
-                                                                  8),
-                                                            ],
-                                                            enabled: controller
-                                                                .enabled,
-                                                            controller: controller
-                                                                .waitingItemsList[
-                                                                    index]
-                                                                .freeQuantityTextController,
-                                                            onTap: () => controller
-                                                                .itemFreeQuantityOnTap(
-                                                                    index),
-                                                            onFieldSubmitted: (value) =>
-                                                                controller.itemFreeQuantityOnSubmitted(
-                                                                    value, index),
-                                                            onChanged: (value) =>
-                                                                controller.itemFreeQuantityOnChanged(
-                                                                    value, index),
-
-                                                            ///الكميه
-                                                            style: TextStyle(
-                                                                fontSize: ScreenUtil()
-                                                                    .setSp(35)),
-                                                            // inputFormatters: [
-                                                            //   FilteringTextInputFormatter
-                                                            //       .digitsOnly
-                                                            // ],
-
-                                                            // initialValue: controller
-                                                            //     .waitingItemsList[
-                                                            // index]
-                                                            //     .quantity
-                                                            //     .toString(),
-                                                            keyboardType:
-                                                                TextInputType.numberWithOptions(
-                                                                    decimal: false),
-                                                            autofocus: false)),
-                                                      ]);
-                                                },
-                                              ).toList()),
+                                                              // initialValue: controller
+                                                              //     .waitingItemsList[
+                                                              // index]
+                                                              //     .quantity
+                                                              //     .toString(),
+                                                              keyboardType:
+                                                                  TextInputType.numberWithOptions(
+                                                                      decimal: false),
+                                                              autofocus: false)),
+                                                        ]);
+                                                  },
+                                                ).toList()),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -715,332 +730,327 @@ class ReceiptView extends GetWidget<ReceiptViewModel> {
                             ),
                           ),
                           SizedBox(
-                            height: height * 0.1,
+                            height: height * 0.01,
                           ),
                           Container(
                             width: width,
-                            padding: EdgeInsets.all(5),
-                            child: Container(
-                              width: width,
-                              alignment: Alignment.center,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: GetBuilder<ReceiptViewModel>(
-                                  builder: (controller) => DataTable(
-                                      dividerThickness: 2,
-                                      dataRowHeight: height * 0.07,
-                                      headingRowHeight: height * 0.07,
-                                      columnSpacing: width * 0.02,
-                                      headingRowColor:
-                                          MaterialStateColor.resolveWith(
-                                              (states) => Colors.blueGrey),
-                                      columns: [
-                                        DataColumn(
-                                          label: Container(
-                                            alignment: Alignment.center,
-                                            color: controller.receiptAccount
-                                                        .currentBalance! >
-                                                    0
-                                                ? edgesSelectorAColor
-                                                : edgesSelectorBColor,
-                                            child: Text(
-                                              'رص سابق',
-                                              style: rowItemTextStyle(),
-                                            ),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Text(
-                                            'ج الفاتورة',
+                            alignment: Alignment.topCenter,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: GetBuilder<ReceiptViewModel>(
+                                builder: (controller) => DataTable(
+                                    dividerThickness: 2,
+                                    dataRowHeight: height * 0.07,
+                                    headingRowHeight: height * 0.07,
+                                    columnSpacing: width * 0.02,
+                                    headingRowColor:
+                                        MaterialStateColor.resolveWith(
+                                            (states) => Colors.blueGrey),
+                                    columns: [
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          color: controller.receiptAccount.currentBalance! >
+                                                  0
+                                              ? edgesSelectorAColor
+                                              : edgesSelectorBColor,
+                                          child: Text(
+                                            'رص سابق',
                                             style: rowItemTextStyle(),
                                           ),
                                         ),
-                                        DataColumn(
-                                          label: Text(
-                                            'خصم',
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'ج الفاتورة',
+                                          style: rowItemTextStyle(),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'خصم',
+                                          style: rowItemTextStyle(),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'اضافة',
+                                          style: rowItemTextStyle(),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'ضريبة',
+                                          style: rowItemTextStyle(),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          color: selectorColor,
+                                          child: Text(
+                                            'ص الفاتورة',
                                             style: rowItemTextStyle(),
                                           ),
                                         ),
-                                        DataColumn(
-                                          label: Text(
-                                            'اضافة',
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'س نقدي',
+                                          style: rowItemTextStyle(),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'الباقي',
+                                          style: rowItemTextStyle(),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          color: controller.balanceAfter >= 0
+                                              ? edgesSelectorAColor
+                                              : edgesSelectorBColor,
+                                          child: Text(
+                                            'رص حالي',
                                             style: rowItemTextStyle(),
                                           ),
                                         ),
-                                        DataColumn(
-                                          label: Text(
-                                            'ضريبة',
-                                            style: rowItemTextStyle(),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Container(
-                                            alignment: Alignment.center,
-                                            color: selectorColor,
-                                            child: Text(
-                                              'ص الفاتورة',
-                                              style: rowItemTextStyle(),
-                                            ),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Text(
-                                            'س نقدي',
-                                            style: rowItemTextStyle(),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Text(
-                                            'الباقي',
-                                            style: rowItemTextStyle(),
-                                          ),
-                                        ),
-                                        DataColumn(
-                                          label: Container(
-                                            alignment: Alignment.center,
-                                            color: controller.rest >= 0
-                                                ? edgesSelectorAColor
-                                                : edgesSelectorBColor,
-                                            child: Text(
-                                              'رص حالي',
-                                              style: rowItemTextStyle(),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                      rows: List<DataRow>.generate(
-                                        1,
-                                        (index) => DataRow(
-                                            color: MaterialStateProperty
-                                                .resolveWith<Color>(
-                                                    (Set<MaterialState>
-                                                        states) {
-                                              // Even rows will have a grey color.
-                                              if (index % 2 == 0)
-                                                return Colors.grey.shade50;
-                                              return Colors.grey
-                                                  .shade300; // Use default value for other states and odd rows.
-                                            }),
-                                            cells: [
-                                              DataCell(Container(
-                                                color: controller.receiptAccount
-                                                            .currentBalance! >
-                                                        0
-                                                    ? edgesSelectorAColor
-                                                    : edgesSelectorBColor,
-                                                child: Text(
-                                                  ///الرصيد قبل الفاتورة
-                                                  controller.balanceBefore
-                                                      .toStringAsFixed(3),
-                                                  style: rowItemTextStyle(),
-                                                ),
-                                              )),
-                                              DataCell(Text(
-                                                ///اجمالي الفاتورة
-                                                controller.total
+                                      ),
+                                    ],
+                                    rows: List<DataRow>.generate(
+                                      1,
+                                      (index) => DataRow(
+                                          color: MaterialStateProperty
+                                              .resolveWith<Color>(
+                                                  (Set<MaterialState>
+                                                      states) {
+                                            // Even rows will have a grey color.
+                                            if (index % 2 == 0)
+                                              return Colors.grey.shade50;
+                                            return Colors.grey
+                                                .shade300; // Use default value for other states and odd rows.
+                                          }),
+                                          cells: [
+                                            DataCell(Container(
+                                              color: controller.receiptAccount
+                                                          .currentBalance! >
+                                                      0
+                                                  ? edgesSelectorAColor
+                                                  : edgesSelectorBColor,
+                                              child: Text(
+                                                ///الرصيد قبل الفاتورة
+                                                controller.balanceBefore
                                                     .toStringAsFixed(3),
-                                                style:
-                                                    rowItemElementTextStyle(),
-                                              )),
-                                              DataCell(TextFormField(
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onFieldSubmitted: (value) {
-                                                  if (controller
+                                                style: rowItemTextStyle(),
+                                              ),
+                                            )),
+                                            DataCell(Text(
+                                              ///اجمالي الفاتورة
+                                              controller.total
+                                                  .toStringAsFixed(3),
+                                              style:
+                                                  rowItemElementTextStyle(),
+                                            )),
+                                            DataCell(TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              onFieldSubmitted: (value) {
+                                                if (controller
+                                                    .totalDiscountController
+                                                    .text
+                                                    .isEmpty) {
+                                                  controller
                                                       .totalDiscountController
-                                                      .text
-                                                      .isEmpty) {
-                                                    controller
-                                                        .totalDiscountController
-                                                        .text = '0';
-                                                    controller
-                                                            .setTotalDiscount =
-                                                        double.parse(value);
-                                                  }
-                                                  controller.updateNetReceipt();
-                                                },
-                                                enabled: controller.enabled,
-
-                                                /// خصم
-                                                controller: controller
-                                                    .totalDiscountController,
-                                                onTap: () => controller
-                                                        .totalDiscountController
-                                                        .selection =
-                                                    TextSelection(
-                                                        baseOffset: 0,
-                                                        extentOffset: controller
-                                                            .totalDiscountController
-                                                            .value
-                                                            .text
-                                                            .length),
-                                                onChanged: (value) {
-                                                  controller.setTotalDiscount =
+                                                      .text = '0';
+                                                  controller
+                                                          .setTotalDiscount =
                                                       double.parse(value);
-                                                  controller.updateNetReceipt();
-                                                },
+                                                }
+                                                controller.updateNetReceipt();
+                                              },
+                                              enabled: controller.enabled,
 
-                                                style:
-                                                    rowItemElementTextStyle(),
-                                              )),
-                                              DataCell(TextFormField(
-                                                keyboardType:
-                                                    TextInputType.number,
+                                              /// خصم
+                                              controller: controller
+                                                  .totalDiscountController,
+                                              onTap: () => controller
+                                                      .totalDiscountController
+                                                      .selection =
+                                                  TextSelection(
+                                                      baseOffset: 0,
+                                                      extentOffset: controller
+                                                          .totalDiscountController
+                                                          .value
+                                                          .text
+                                                          .length),
+                                              onChanged: (value) {
+                                                controller.setTotalDiscount =
+                                                    double.parse(value);
+                                                controller.updateNetReceipt();
+                                              },
 
-                                                onFieldSubmitted: (value) {
-                                                  if (controller
+                                              style:
+                                                  rowItemElementTextStyle(),
+                                            )),
+                                            DataCell(TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+
+                                              onFieldSubmitted: (value) {
+                                                if (controller
+                                                    .totalAdditionController
+                                                    .text
+                                                    .isEmpty) {
+                                                  controller
                                                       .totalAdditionController
-                                                      .text
-                                                      .isEmpty) {
-                                                    controller
-                                                        .totalAdditionController
-                                                        .text = '0';
-                                                    controller.setAddition =
-                                                        double.parse(value);
-                                                  }
-                                                  controller.updateNetReceipt();
-                                                },
-                                                controller: controller
-                                                    .totalAdditionController,
-                                                onTap: () => controller
-                                                        .totalAdditionController
-                                                        .selection =
-                                                    TextSelection(
-                                                        baseOffset: 0,
-                                                        extentOffset: controller
-                                                            .totalAdditionController
-                                                            .value
-                                                            .text
-                                                            .length),
-                                                enabled: controller.enabled,
-
-                                                /// اضافي
-
-                                                onChanged: (value) {
+                                                      .text = '0';
                                                   controller.setAddition =
                                                       double.parse(value);
-                                                  controller.updateNetReceipt();
-                                                },
+                                                }
+                                                controller.updateNetReceipt();
+                                              },
+                                              controller: controller
+                                                  .totalAdditionController,
+                                              onTap: () => controller
+                                                      .totalAdditionController
+                                                      .selection =
+                                                  TextSelection(
+                                                      baseOffset: 0,
+                                                      extentOffset: controller
+                                                          .totalAdditionController
+                                                          .value
+                                                          .text
+                                                          .length),
+                                              enabled: controller.enabled,
 
-                                                style:
-                                                    rowItemElementTextStyle(),
-                                              )),
-                                              DataCell(TextFormField(
-                                                keyboardType:
-                                                    TextInputType.number,
+                                              /// اضافي
 
-                                                onFieldSubmitted: (value) {
-                                                  if (controller
-                                                      .totalTaxController
-                                                      .text
-                                                      .isEmpty) {
-                                                    controller
-                                                        .totalTaxController
-                                                        .text = '0';
-                                                    controller.setTax =
-                                                        double.parse(value);
+                                              onChanged: (value) {
+                                                controller.setAddition =
                                                     double.parse(value);
-                                                  }
-                                                  controller.updateNetReceipt();
-                                                },
-                                                controller: controller
-                                                    .totalTaxController,
-                                                onTap: () => controller
-                                                        .totalTaxController
-                                                        .selection =
-                                                    TextSelection(
-                                                        baseOffset: 0,
-                                                        extentOffset: controller
-                                                            .totalTaxController
-                                                            .value
-                                                            .text
-                                                            .length),
-                                                enabled: controller.enabled,
+                                                controller.updateNetReceipt();
+                                              },
 
-                                                /// ضريبة
-                                                onChanged: (value) {
+                                              style:
+                                                  rowItemElementTextStyle(),
+                                            )),
+                                            DataCell(TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+
+                                              onFieldSubmitted: (value) {
+                                                if (controller
+                                                    .totalTaxController
+                                                    .text
+                                                    .isEmpty) {
+                                                  controller
+                                                      .totalTaxController
+                                                      .text = '0';
                                                   controller.setTax =
                                                       double.parse(value);
-                                                  controller.updateNetReceipt();
-                                                },
+                                                  double.parse(value);
+                                                }
+                                                controller.updateNetReceipt();
+                                              },
+                                              controller: controller
+                                                  .totalTaxController,
+                                              onTap: () => controller
+                                                      .totalTaxController
+                                                      .selection =
+                                                  TextSelection(
+                                                      baseOffset: 0,
+                                                      extentOffset: controller
+                                                          .totalTaxController
+                                                          .value
+                                                          .text
+                                                          .length),
+                                              enabled: controller.enabled,
 
-                                                style:
-                                                    rowItemElementTextStyle(),
-                                              )),
-                                              DataCell(Text(
-                                                ///صافي
-                                                controller.netReceipt
-                                                    .toStringAsFixed(3),
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        ScreenUtil().setSp(30),
-                                                    backgroundColor:
-                                                        selectorColor,
-                                                    color: Colors.white),
-                                              )),
-                                              DataCell(TextFormField(
-                                                keyboardType:
-                                                    TextInputType.number,
+                                              /// ضريبة
+                                              onChanged: (value) {
+                                                controller.setTax =
+                                                    double.parse(value);
+                                                controller.updateNetReceipt();
+                                              },
 
-                                                onFieldSubmitted: (value) {
-                                                  if (controller
+                                              style:
+                                                  rowItemElementTextStyle(),
+                                            )),
+                                            DataCell(Text(
+                                              ///صافي
+                                              controller.netReceipt
+                                                  .toStringAsFixed(3),
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      ScreenUtil().setSp(30),
+                                                  backgroundColor:
+                                                      selectorColor,
+                                                  color: Colors.white),
+                                            )),
+                                            DataCell(TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+
+                                              onFieldSubmitted: (value) {
+                                                if (controller
+                                                    .cashPaymentController
+                                                    .text
+                                                    .isEmpty) {
+                                                  controller
                                                       .cashPaymentController
-                                                      .text
-                                                      .isEmpty) {
-                                                    controller
-                                                        .cashPaymentController
-                                                        .text = '0';
-                                                    controller.setCashPayment =
-                                                        double.parse(value);
-                                                  }
-                                                  controller.updateNetReceipt();
-                                                },
-                                                controller: controller
-                                                    .cashPaymentController,
-                                                onTap: () => controller
-                                                        .cashPaymentController
-                                                        .selection =
-                                                    TextSelection(
-                                                        baseOffset: 0,
-                                                        extentOffset: controller
-                                                            .cashPaymentController
-                                                            .value
-                                                            .text
-                                                            .length),
-
-                                                enabled: controller.enabled,
-
-                                                /// سداد نقدي
-                                                onChanged: (value) {
+                                                      .text = '0';
                                                   controller.setCashPayment =
                                                       double.parse(value);
-                                                  controller.updateNetReceipt();
-                                                },
+                                                }
+                                                controller.updateNetReceipt();
+                                              },
+                                              controller: controller
+                                                  .cashPaymentController,
+                                              onTap: () => controller
+                                                      .cashPaymentController
+                                                      .selection =
+                                                  TextSelection(
+                                                      baseOffset: 0,
+                                                      extentOffset: controller
+                                                          .cashPaymentController
+                                                          .value
+                                                          .text
+                                                          .length),
 
-                                                style:
-                                                    rowItemElementTextStyle(),
-                                              )),
-                                              DataCell(Text(
-                                                ///الباقي
-                                                controller.rest
+                                              enabled: controller.enabled,
+
+                                              /// سداد نقدي
+                                              onChanged: (value) {
+                                                controller.setCashPayment =
+                                                    double.parse(value);
+                                                controller.updateNetReceipt();
+                                              },
+
+                                              style:
+                                                  rowItemElementTextStyle(),
+                                            )),
+                                            DataCell(Text(
+                                              ///الباقي
+                                              controller.rest
+                                                  .toStringAsFixed(3),
+                                              style:
+                                                  rowItemElementTextStyle(),
+                                            )),
+                                            DataCell(Container(
+                                              color: controller.balanceAfter >= 0
+                                                  ? edgesSelectorAColor
+                                                  : edgesSelectorBColor,
+                                              child: Text(
+                                                ///رصيد بعد الفاتورة
+                                                controller.balanceAfter
                                                     .toStringAsFixed(3),
-                                                style:
-                                                    rowItemElementTextStyle(),
-                                              )),
-                                              DataCell(Container(
-                                                color: controller.rest >= 0
-                                                    ? edgesSelectorAColor
-                                                    : edgesSelectorBColor,
-                                                child: Text(
-                                                  ///رصيد بعد الفاتورة
-                                                  controller.balanceAfter
-                                                      .toStringAsFixed(3),
-                                                  style: rowItemTextStyle(),
-                                                ),
-                                              )),
-                                            ]),
-                                      ).toList()),
-                                ),
+                                                style: rowItemTextStyle(),
+                                              ),
+                                            )),
+                                          ]),
+                                    ).toList()),
                               ),
                             ),
                           ),

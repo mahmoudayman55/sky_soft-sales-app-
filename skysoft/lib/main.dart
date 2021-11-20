@@ -1,14 +1,11 @@
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:skysoft/constants.dart';
 import 'package:skysoft/helper/Binding.dart';
-import 'package:skysoft/view/add_item_view.dart';
 import 'package:skysoft/view/home_view.dart';
-import 'package:skysoft/view/item_view.dart';
-
 
 //flutter run --release --no-sound-null-safety
 //flutter run --no-sound-null-safety
@@ -16,9 +13,13 @@ import 'package:skysoft/view/item_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox(constBoxName);
+
 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.landscapeRight, DeviceOrientation.landscapeLeft]);
+
   runApp(MyApp());
 
 }
