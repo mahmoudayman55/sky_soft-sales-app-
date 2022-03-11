@@ -1,6 +1,0 @@
-CREATE TABLE account(acc_name TEXT, acc_code TEXT, note TEXT,
-acc_barcode TEXT,employ_code TEXT, employ_name TEXT,
-current_balance REAL,max_credit REAL,
-def_employ_id INTEGER,price_id INTEGER,wait_days INTEGER,
-currency_id INTEGER, cost_center_id INTEGER, branch_id INTEGER, user_id INTEGER,
-pay_by_cash_only BOOLEAN,stopped BOOLEAN);
