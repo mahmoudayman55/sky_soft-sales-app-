@@ -1,6 +1,5 @@
 # skysoft
-
-A new Flutter project.
+my first flutter app with sqflite
 
 ## Getting Started
 
